@@ -15,6 +15,24 @@ public class TransportVehicleMission {
     private LocalDate dateOfDeparture;
     private LocalDate dateOfArrival;
 
+    private double PriceForMission;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private TransportVehicle vehicle;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TransportCompany company;
+
+    @Override
+    public String toString() {
+        return "TransportVehicleMission{" +
+                "id=" + id +
+                ", departureStartingPoint='" + departureStartingPoint + '\'' +
+                ", departureArrivalPoint='" + departureArrivalPoint + '\'' +
+                ", dateOfDeparture=" + dateOfDeparture +
+                ", dateOfArrival=" + dateOfArrival +
+                ", PriceForMission=" + PriceForMission +
+                ", vehicle=" + vehicle +
+                ", company=" + company +
+                '}';
+    }
 }

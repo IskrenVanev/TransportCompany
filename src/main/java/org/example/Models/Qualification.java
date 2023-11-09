@@ -13,6 +13,14 @@ public class Qualification {
     @ManyToOne(fetch = FetchType.LAZY)
     private DriverEmployee driver;
 
+    @Override
+    public String toString() {
+        return "Qualification{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
     public long getId() {
         return id;
     }

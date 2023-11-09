@@ -24,6 +24,14 @@ public class DriverEmployee {
         return id;
     }
 
+    @Override
+    public String toString() {
+        return "DriverEmployee{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
     public String getName() {
         return name;
     }

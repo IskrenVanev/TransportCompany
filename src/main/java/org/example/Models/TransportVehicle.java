@@ -29,6 +29,15 @@ public class TransportVehicle {
         return id;
     }
 
+    @Override
+    public String toString() {
+        return "TransportVehicle{" +
+                "id=" + id +
+                ", vehicleType=" + vehicleType +
+                ", company=" + company +
+                ", transportContent=" + transportContent +
+                '}';
+    }
 
     public VehicleType getVehicleType() {
         return vehicleType;

@@ -34,6 +34,14 @@ public class TransportContent {//either people or stock
         }
     }
 
+    @Override
+    public String toString() {
+        return "TransportContent{" +
+                "id=" + id +
+                ", content=" + content +
+                ", weight=" + weight +
+                '}';
+    }
 
     public ContentType getContent() {
         return content;
