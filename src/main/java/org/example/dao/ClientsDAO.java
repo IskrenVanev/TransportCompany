@@ -46,42 +46,94 @@ public class ClientsDAO {
         return clients;
     }
     public static void updateClient(Client client) {
-        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            session.saveOrUpdate(client);
+
+            // Update the client
+            session.update(client);
+
+            // Update the name in the associated TransportCompany
+            TransportCompany company = client.getCompany();
+            if (company != null) {
+                company.getClients().forEach(c -> {
+                    if (c.getId() == client.getId()) {
+                        c.setName(client.getName());
+                    }
+                });
+                session.update(company);
+            }
+
             transaction.commit();
         }
     }
+
     public static void updateClientNameById(long clientId, String newName) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            Client clientToUpdate = session.get(Client.class, clientId);
-            if (clientToUpdate != null) {
-                clientToUpdate.setName(newName); // Set the new name
-                session.update(clientToUpdate);   // Use update instead of merge
 
+            // Retrieve the client
+            Client clientToUpdate = session.get(Client.class, clientId);
+
+            if (clientToUpdate != null) {
+                // Update the name
+                clientToUpdate.setName(newName);
+
+                // Update the name in the associated TransportCompany
+                TransportCompany company = clientToUpdate.getCompany();
+                if (company != null) {
+                    company.getClients().forEach(c -> {
+                        if (c.getId() == clientToUpdate.getId()) {
+                            c.setName(newName);
+                        }
+                    });
+                    session.update(company);
+                }
+
+                session.update(clientToUpdate);
             } else {
-                System.out.println("Company with ID " + clientId + " not found.");
+                System.out.println("Client with ID " + clientId + " not found.");
             }
+
             transaction.commit();
         }
     }
     public static void deleteClient(Client client) {
-        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
+
+            // Remove the client from the associated TransportCompany
+            TransportCompany company = client.getCompany();
+            if (company != null) {
+                company.getClients().remove(client);
+            }
+
+            // Now delete the client
             session.delete(client);
+
             transaction.commit();
         }
     }
+
     public static void deleteClientById(long clientId) {
-        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
+
+            // Retrieve the client
             Client clientToDelete = session.get(Client.class, clientId);
+
             if (clientToDelete != null) {
+                // Remove the client from the associated TransportCompany
+                TransportCompany company = clientToDelete.getCompany();
+                if (company != null) {
+                    company.getClients().remove(clientToDelete);
+                }
+
+                // Now delete the client
                 session.delete(clientToDelete);
             } else {
-                System.out.println("Company with ID " + clientId + " not found.");
+                System.out.println("Client with ID " + clientId + " not found.");
             }
+
             transaction.commit();
         }
     }

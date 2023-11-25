@@ -54,4 +54,16 @@ public class TransportContent {//either people or stock
     public double getWeight() {
         return weight;
     }
+
+    public void setContent(ContentType content) {
+        this.content = content;
+    }
+
+    public void setTransportVehicle(TransportVehicle transportVehicle) {
+        this.transportVehicle = transportVehicle;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
+    }
 }

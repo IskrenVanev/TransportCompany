@@ -18,15 +18,31 @@ public class TransportVehicle {
 
     @Enumerated(EnumType.STRING)
     private VehicleType vehicleType;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private TransportCompany company;
-    @OneToOne(mappedBy = "transportVehicle", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "transportVehicle", fetch = FetchType.EAGER)
     private TransportContent transportContent;
 
-    @OneToMany(mappedBy = "vehicle", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "vehicle", fetch = FetchType.EAGER)
     private List<TransportVehicleMission> missions= new ArrayList<>();
     public long getId() {
         return id;
+    }
+
+    public void setVehicleType(VehicleType vehicleType) {
+        this.vehicleType = vehicleType;
+    }
+
+    public void setCompany(TransportCompany company) {
+        this.company = company;
+    }
+
+    public void setTransportContent(TransportContent transportContent) {
+        this.transportContent = transportContent;
+    }
+
+    public void setMissions(List<TransportVehicleMission> missions) {
+        this.missions = missions;
     }
 
     @Override

@@ -53,6 +53,31 @@ public class TransportCompany {
         this.name = name;
     }
 
+
+    public List<TransportVehicleMission> getMissions() {
+        return missions;
+    }
+
+    public List<Client> getClients() {
+        return clients;
+    }
+
+    public void setDriverEmployees(Set<DriverEmployee> driverEmployees) {
+        this.driverEmployees = driverEmployees;
+    }
+
+    public void setVehicles(List<TransportVehicle> vehicles) {
+        this.vehicles = vehicles;
+    }
+
+    public void setMissions(List<TransportVehicleMission> missions) {
+        this.missions = missions;
+    }
+
+    public void setClients(List<Client> clients) {
+        this.clients = clients;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
