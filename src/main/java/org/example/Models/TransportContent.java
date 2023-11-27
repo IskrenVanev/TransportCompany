@@ -13,6 +13,11 @@ public class TransportContent {//either people or stock
     private ContentType content;//PEOPLE, STOCK
     @OneToOne(fetch = FetchType.LAZY)
     private TransportVehicle transportVehicle;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private TransportVehicleMission mission;
+
+
     private Double weight;
 
     public long getId() {

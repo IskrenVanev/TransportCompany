@@ -1,5 +1,6 @@
 package org.example.dao;
 
+import org.example.CustomExceptions.NoTransportVehicleFoundException;
 import org.example.DTO.TransportCompanyDTO;
 import org.example.DTO.TransportContentDTO;
 import org.example.Models.Client;
@@ -50,82 +51,15 @@ public class TransportVehicleDAO {
         return transportVehicles;
     }
 
-    public static void updateTransportVehicle(
-            long transportVehicleId,
-            VehicleType newType,
-            TransportCompanyDTO newCompany,
-            TransportContentDTO newTransportContent
-    ) {
-        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+    public static void updateVehicle(TransportVehicle vehicle) {
+        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-
-            // Retrieve the existing entities
-            TransportVehicle oldTransportVehicleToUpdate = session.get(TransportVehicle.class, transportVehicleId);
-
-
-
-            // Update the VehicleType
-            if (oldTransportVehicleToUpdate != null) {
-                if (newType != null && !newType.equals(oldTransportVehicleToUpdate.getVehicleType())) {
-                    oldTransportVehicleToUpdate.setVehicleType(newType);
-                }
-
-                // Update the TransportContent
-                if (newTransportContent != null) {
-                    TransportContent existingTransportContent = oldTransportVehicleToUpdate.getTransportContent();
-                    if (existingTransportContent != null && !existingTransportContent.getContent().equals(newTransportContent.getContent())) {
-                        // If the content type is different, update the transport content
-                        existingTransportContent.setContent(newTransportContent.getContent());
-                        if (existingTransportContent.getContent() != ContentType.PEOPLE){
-                            existingTransportContent.setWeight(newTransportContent.getWeight());
-                        }
-                        session.update(existingTransportContent);
-                    } else if (existingTransportContent == null) {
-                        // If there was no existing transport content, create a new one
-                        TransportContent transportContent = new TransportContent();
-                        transportContent.setContent(newTransportContent.getContent());
-                        if (transportContent.getContent() != ContentType.PEOPLE){
-                            transportContent.setWeight(newTransportContent.getWeight());
-                        }
-                        oldTransportVehicleToUpdate.setTransportContent(transportContent);
-                    }
-                }
-
-
-
-
-                // Update the TransportCompany
-                if (newCompany != null) {
-                    long companyIdFromDTO = newCompany.getId();
-
-                    // Check if the company with the given ID exists in the database
-                    TransportCompany newCompanyToUpdate = session.get(TransportCompany.class, companyIdFromDTO);
-                    if (newCompanyToUpdate != null) {
-                        // Remove the vehicle from the old company
-                        TransportCompany oldCompany = oldTransportVehicleToUpdate.getCompany();
-                        if (oldCompany != null) {
-                            oldCompany.getVehicles().remove(oldTransportVehicleToUpdate);
-                            session.update(oldCompany);
-                        }
-
-                        // Add the vehicle to the new company
-                        newCompanyToUpdate.getVehicles().add(oldTransportVehicleToUpdate);
-                        oldTransportVehicleToUpdate.setCompany(newCompanyToUpdate);
-                        session.update(newCompanyToUpdate);
-                    } else {
-                        System.out.println("TransportCompany with ID " + companyIdFromDTO + " not found.");
-                    }
-                }
-
-                // Save or update the TransportVehicle
-                session.update(oldTransportVehicleToUpdate);
-            } else {
-                System.out.println("TransportVehicle with ID " + transportVehicleId + " not found.");
-            }
-
+            session.saveOrUpdate(vehicle);
             transaction.commit();
         }
     }
+
+
     public static void deleteTransportVehicle(TransportVehicle transportVehicle, Session session) {
      //   try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
@@ -143,7 +77,7 @@ public class TransportVehicleDAO {
         }
  //   }
 
-    public static void deleteTransportVehicleById(long transportVehicleId) {
+    public static void deleteTransportVehicleById(long transportVehicleId) throws NoTransportVehicleFoundException{
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
@@ -160,7 +94,7 @@ public class TransportVehicleDAO {
                 // Now delete the transport vehicle
                 session.delete(transportVehicleToDelete);
             } else {
-                System.out.println("TransportVehicle with ID " + transportVehicleId + " not found.");
+                throw new NoTransportVehicleFoundException(transportVehicleId);
             }
 
             transaction.commit();
@@ -169,3 +103,77 @@ public class TransportVehicleDAO {
 }
 
 
+
+
+
+//Old code for updating stuff. I realised that it is not the correct way.
+
+//    public static void updateTransportVehicle(
+//            long transportVehicleId,
+//            VehicleType newType,
+//            String newCompanyId,
+//            String newCompanyName,
+//            ContentType newtransportContentType,
+//            Double weight
+//    ) throws NoTransportVehicleFoundException{
+//        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+//            Transaction transaction = session.beginTransaction();
+//
+//            // Retrieve the existing entities
+//            TransportVehicle oldTransportVehicleToUpdate = session.get(TransportVehicle.class, transportVehicleId);
+//
+//
+//
+//            // Update the VehicleType
+//            if (oldTransportVehicleToUpdate != null) {
+//                if (newType != null && !newType.equals(oldTransportVehicleToUpdate.getVehicleType())) {
+//                    oldTransportVehicleToUpdate.setVehicleType(newType);
+//                }
+//
+//                // Update the TransportContent
+//                if (newtransportContentType != null || weight != null) {
+//                    TransportContent existingTransportContent = oldTransportVehicleToUpdate.getTransportContent();
+//                    if (existingTransportContent != null && !existingTransportContent.getContent().equals(newtransportContentType)) {
+//                        // If the content type is different, update the transport content
+//                        existingTransportContent.setContent(newtransportContentType);
+//                        if (existingTransportContent.getContent() != ContentType.PEOPLE && weight != null && weight != 0){
+//                            existingTransportContent.setWeight(weight);
+//                        }
+//                        session.update(existingTransportContent);
+//                    } else if (existingTransportContent == null) {
+//                        // If there was no existing transport content, create a new one
+//                        TransportContent transportContent = new TransportContent();
+//                        transportContent.setContent(newtransportContentType);
+//                        if (transportContent.getContent() != ContentType.PEOPLE && weight != null && weight != 0){
+//                            transportContent.setWeight(weight);
+//                        }
+//                        oldTransportVehicleToUpdate.setTransportContent(transportContent);
+//                    }
+//                }
+//
+//
+//
+//                TransportCompany newCompany = session.get(TransportCompany.class, newCompanyId);
+//                // Update the TransportCompany
+//                if (newCompany != null) {
+//                    TransportCompany oldCompany = oldTransportVehicleToUpdate.getCompany();
+//                    if (!oldCompany.getName().equals(newCompanyName) && oldCompany != null) {
+//                        // oldCompany.setName(newCompanyName);
+//                        oldCompany.getVehicles().remove(oldTransportVehicleToUpdate);
+//                        newCompany.getVehicles().add(oldTransportVehicleToUpdate);
+//                        oldTransportVehicleToUpdate.setCompany(newCompany);
+//
+//                        session.update(oldCompany);
+//                        session.update(oldTransportVehicleToUpdate);
+//                        session.update(newCompany);
+//                    } else {
+//                        throw new NoTransportVehicleFoundException(transportVehicleId);
+//                    }
+//                }
+//            } else {
+//                throw new NoTransportVehicleFoundException(transportVehicleId);
+//            }
+//
+//            transaction.commit();
+//        }
+//    }

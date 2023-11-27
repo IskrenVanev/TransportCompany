@@ -1,5 +1,6 @@
 package org.example.dao;
 
+import org.example.CustomExceptions.NoCompanyException;
 import org.example.Models.TransportCompany;
 import org.example.configuration.SessionFactoryUtil;
 import org.hibernate.Session;
@@ -44,20 +45,7 @@ public class TransportCompanyDAO {
             transaction.commit();
         }
     }
-    public static void updateCompanyNameById(long companyId, String newName) {
-        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
-            TransportCompany companyToUpdate = session.get(TransportCompany.class, companyId);
-            if (companyToUpdate != null) {
-                companyToUpdate.setName(newName); // Set the new name
-                session.update(companyToUpdate);   // Use update instead of merge
 
-            } else {
-                System.out.println("Company with ID " + companyId + " not found.");
-            }
-            transaction.commit();
-        }
-    }
     public static void deleteCompany(TransportCompany company) {
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
@@ -65,16 +53,37 @@ public class TransportCompanyDAO {
             transaction.commit();
         }
     }
-    public static void deleteCompanyById(long companyId) {
+    public static void deleteCompanyById(long companyId) throws NoCompanyException{
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             TransportCompany companyToDelete = session.get(TransportCompany.class, companyId);
             if (companyToDelete != null) {
                 session.delete(companyToDelete);
             } else {
-                System.out.println("Company with ID " + companyId + " not found.");
+                throw new NoCompanyException(companyId);
             }
             transaction.commit();
         }
     }
 }
+
+
+
+
+//Old code for updating stuff. I realised that it is not the correct way.
+
+
+//    public static void updateCompanyNameById(long companyId, String newName) throws NoCompanyException {
+//        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+//            Transaction transaction = session.beginTransaction();
+//            TransportCompany companyToUpdate = session.get(TransportCompany.class, companyId);
+//            if (companyToUpdate != null) {
+//                companyToUpdate.setName(newName); // Set the new name
+//                session.update(companyToUpdate);   // Use update instead of merge
+//
+//            } else {
+//                throw new NoCompanyException(companyId);
+//            }
+//            transaction.commit();
+//        }
+//    }

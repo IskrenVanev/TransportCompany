@@ -25,6 +25,17 @@ public class TransportVehicle {
 
     @OneToMany(mappedBy = "vehicle", fetch = FetchType.EAGER)
     private List<TransportVehicleMission> missions= new ArrayList<>();
+
+    public TransportVehicle() {
+    }
+
+    public TransportVehicle(VehicleType vehicleType, TransportCompany company, TransportContent transportContent, List<TransportVehicleMission> missions) {
+        this.vehicleType = vehicleType;
+        this.company = company;
+        this.transportContent = transportContent;
+        this.missions = missions;
+    }
+
     public long getId() {
         return id;
     }

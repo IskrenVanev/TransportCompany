@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
+//TODO: 5. Възможност за записване на данни за превозите (дестинация, товар, цена и др.)
+
+
 @Entity
 @Table(name = "TransportVehicleMission")
 public class TransportVehicleMission {
@@ -21,6 +24,8 @@ public class TransportVehicleMission {
     private TransportVehicle vehicle;
     @ManyToOne(fetch = FetchType.LAZY)
     private TransportCompany company;
+    @OneToOne(mappedBy = "mission", fetch = FetchType.EAGER)
+    private TransportContent content;
 
     @Override
     public String toString() {

@@ -24,6 +24,16 @@ public class DriverEmployee {
         return id;
     }
 
+    public DriverEmployee() {
+    }
+
+
+    public DriverEmployee(String name, TransportCompany company, Set<Qualification> qualifications) {
+        this.name = name;
+        this.company = company;
+        this.qualifications = qualifications;
+    }
+
     @Override
     public String toString() {
         return "DriverEmployee{" +
@@ -42,5 +52,13 @@ public class DriverEmployee {
 
     public Set<Qualification> getQualifications() {
         return qualifications;
+    }
+
+    public void setCompany(TransportCompany company) {
+        this.company = company;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
