@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 //TODO:6. Начин за записване на това, дали клиентът си е платил задълженията.
 @Entity
@@ -21,6 +23,9 @@ public class Client {
     @ManyToOne(fetch = FetchType.LAZY)
     private TransportCompany company;
 
+
+    private double finances;
+
     public void setObligations(List<Obligation> obligations) {
         this.obligations = obligations;
     }
@@ -31,10 +36,29 @@ public class Client {
     }
 
 
-    public Client(String name, TransportCompany company) {
+    public Client(String name, TransportCompany company, double finances) {
+        this.finances = finances;
         this.obligations = new ArrayList<>();
         this.Name = name;
         this.company = company;
+    }
+
+    public List<Obligation> getObligations() {
+        return obligations;
+    }
+    public Obligation getObligation(int id) {
+        Optional<Obligation> optionalObligation = obligations.stream()
+                .filter(o -> o.getId() == id)
+                .findFirst();
+
+        return optionalObligation.orElse(null);
+    }
+    public void setFinances(double finances) {
+        this.finances = finances;
+    }
+
+    public double getFinances() {
+        return finances;
     }
 
     public Client() {

@@ -21,8 +21,8 @@ public class Obligation {
     private Client client;
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private TransportCompany company;
+    //@ManyToOne(fetch = FetchType.EAGER)
+    //private TransportCompany company;
 
     public void setClient(Client client) {
         this.client = client;
@@ -33,17 +33,28 @@ public class Obligation {
 
     public Obligation(Client client, Double amount, TransportCompany company) {
 
-        this.company =company;
+      //  this.company =company;
         this.client = client;
         this.amount = amount;
     }
 
-    public void setCompany(TransportCompany company) {
-        this.company = company;
-    }
+   // public void setCompany(TransportCompany company) {
+   //     this.company = company;
+   // }
 
     public void setAmount(Double amount) {
         this.amount = amount;
     }
 
+    public Double getAmount() {
+        return amount;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Client getClient() {
+        return client;
+    }
 }

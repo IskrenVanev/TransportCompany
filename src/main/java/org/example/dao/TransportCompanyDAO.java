@@ -67,17 +67,17 @@ public class TransportCompanyDAO {
             transaction.commit();
         }
     }
-    public static void addObligation(Obligation obligation , Client client, TransportCompany company) {
+    public static void addObligation(Obligation obligation , Client client) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
 
-            company.addObligation(obligation);
+         //   company.addObligation(obligation);
             client.addObligation(obligation);
             obligation.setClient(client);
-            obligation.setCompany(company);
+          //  obligation.setCompany(company);
 
-            session.saveOrUpdate(company);
+           // session.saveOrUpdate(company);
             session.saveOrUpdate(obligation);
             session.saveOrUpdate(client);
 

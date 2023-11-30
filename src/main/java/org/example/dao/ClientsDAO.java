@@ -1,8 +1,8 @@
 package org.example.dao;
 
 import org.example.CustomExceptions.NoClientException;
+import org.example.CustomExceptions.NotEnoughFundsException;
 import org.example.Models.Client;
-import org.example.Models.DriverEmployee;
 import org.example.Models.Obligation;
 import org.example.Models.TransportCompany;
 import org.example.configuration.SessionFactoryUtil;
@@ -99,12 +99,69 @@ public class ClientsDAO {
     }
 
 
+//TODO:Test if this works
 
 
-    public static void PayObligation(Obligation obligation , Client client){
+
+
+    public static void PayObligation(int obligationId , Client client) throws NotEnoughFundsException{
+        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            Obligation getObligation = session.get(Obligation.class, obligationId);
+            if (getObligation != null){
+               // client.getObligation(obligationId);
+                double amountToPay = getObligation.getAmount();
+                if (client.getFinances() >= amountToPay){
+                    client.setFinances(client.getFinances()-amountToPay);
+                    transaction.commit();
+                }
+                else {
+                    throw new NotEnoughFundsException(client.getId());
+                }
+            }
+
+
+        }
+    }
+    public static void PayAllObligations(Client client)throws NotEnoughFundsException{
+        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            List<Obligation> obligations = client.getObligations();
+            double totalAmount = 0.0;
+            for (Obligation obligation : obligations) {
+                totalAmount += obligation.getAmount();
+            }
+            if (client.getFinances() >= totalAmount){
+                client.setFinances(client.getFinances()-totalAmount);
+                transaction.commit();
+            }
+            else {
+                throw new NotEnoughFundsException(client.getId());
+            }
+        }
+    }
+    public static void IsThereObligationsThatAreNotPaid(Client client){
+        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+          List<Obligation> NotPaidObligations =   client.getObligations();
+          if (NotPaidObligations != null){
+              System.out.println("There are more obligations that the client has to pay for");
+          }
+          else {
+              System.out.println("All obligations are paid");
+          }
+
+        }
+
 
     }
+
+
+
+
 }
+
 
 //Old code for updating stuff. I realised that it is not the correct way.
 

@@ -42,7 +42,7 @@ public class DriverEmployeeDAO {
         return driverEmployees;
     }
 
-    public static void deleteDriverEmployee(DriverEmployee driverEmployee) {
+    public static void deleteDriverEmployee(DriverEmployee driverEmployee) throws  NoDriverEmployeeFoundException{
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             if (driverEmployee != null) {

@@ -20,7 +20,11 @@ import org.example.dao.TransportVehicleDAO;
 
 
 
+
+
+
 //TODO:6. Начин за записване на това, дали клиентът си е платил задълженията.
+//TODO:think about the case in which the client wants to change his company but still has obligations to the previous company
 
 public class Main {
     public static void main(String[] args) {
@@ -28,12 +32,12 @@ public class Main {
      //   this.client = client;
     //    this.amount = amount;
         TransportCompany tc = TransportCompanyDAO.getCompanyById(1);
-        Client client = new Client("Ivan", tc);
+        Client client = new Client("Ivan", tc, 5000);
         ClientsDAO.createClient(client);
        // Client client = ClientsDAO.getClientById();
         Obligation obligation = new Obligation(client, 200.0, tc);
 
-        TransportCompanyDAO.addObligation(obligation, client, tc);
+        TransportCompanyDAO.addObligation(obligation, client);
 
     }
 
