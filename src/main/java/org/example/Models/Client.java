@@ -2,6 +2,7 @@ package org.example.Models;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 //TODO:6. Начин за записване на това, дали клиентът си е платил задълженията.
@@ -31,6 +32,7 @@ public class Client {
 
 
     public Client(String name, TransportCompany company) {
+        this.obligations = new ArrayList<>();
         this.Name = name;
         this.company = company;
     }

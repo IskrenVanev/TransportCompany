@@ -1,6 +1,8 @@
 package org.example.dao;
 
 import org.example.CustomExceptions.NoCompanyException;
+import org.example.Models.Client;
+import org.example.Models.Obligation;
 import org.example.Models.TransportCompany;
 import org.example.configuration.SessionFactoryUtil;
 import org.hibernate.Session;
@@ -64,6 +66,24 @@ public class TransportCompanyDAO {
             }
             transaction.commit();
         }
+    }
+    public static void addObligation(Obligation obligation , Client client, TransportCompany company) {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+
+            company.addObligation(obligation);
+            client.addObligation(obligation);
+            obligation.setClient(client);
+            obligation.setCompany(company);
+
+            session.saveOrUpdate(company);
+            session.saveOrUpdate(obligation);
+            session.saveOrUpdate(client);
+
+            transaction.commit();
+        }
+
     }
 }
 

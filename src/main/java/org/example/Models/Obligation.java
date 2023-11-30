@@ -9,12 +9,20 @@ public class Obligation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
+
+
 
     @Column(name = "amount")
     private Double amount;
+
+
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Client client;
+
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private TransportCompany company;
 
     public void setClient(Client client) {
         this.client = client;
@@ -23,9 +31,15 @@ public class Obligation {
     public Obligation() {
     }
 
-    public Obligation(Client client, Double amount) {
+    public Obligation(Client client, Double amount, TransportCompany company) {
+
+        this.company =company;
         this.client = client;
         this.amount = amount;
+    }
+
+    public void setCompany(TransportCompany company) {
+        this.company = company;
     }
 
     public void setAmount(Double amount) {

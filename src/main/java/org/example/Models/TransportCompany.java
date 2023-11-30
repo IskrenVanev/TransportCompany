@@ -24,15 +24,22 @@ public class TransportCompany {
     private List<Client> clients = new ArrayList<>();
 
 
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
+    private List<Obligation> obligations = new ArrayList<>();
+
+
     public TransportCompany() {
     }
 
     public TransportCompany(String name) {
-
+        this.obligations = new ArrayList<>();
         this.name = name;
 
     }
+    public void addObligation(Obligation obligation) {
+        obligations.add(obligation);
 
+    }
     public long getId() {
         return id;
     }

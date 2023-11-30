@@ -31,9 +31,9 @@ public class Main {
         Client client = new Client("Ivan", tc);
         ClientsDAO.createClient(client);
        // Client client = ClientsDAO.getClientById();
-        Obligation obligation = new Obligation(client, 200.0);
+        Obligation obligation = new Obligation(client, 200.0, tc);
 
-        ClientsDAO.addObligation(obligation, client);
+        TransportCompanyDAO.addObligation(obligation, client, tc);
 
     }
 

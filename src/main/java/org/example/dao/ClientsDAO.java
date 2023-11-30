@@ -98,18 +98,11 @@ public class ClientsDAO {
         }
     }
 
-    public static void addObligation(Obligation obligation , Client client) {
-        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
 
-            client.addObligation(obligation);//adds a new obligation to the client
-            obligation.setClient(client);
 
-            session.saveOrUpdate(obligation);
-            session.saveOrUpdate(client);
 
-            transaction.commit();
-        }
+    public static void PayObligation(Obligation obligation , Client client){
+
     }
 }
 
