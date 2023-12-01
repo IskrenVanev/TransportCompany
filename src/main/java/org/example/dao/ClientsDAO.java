@@ -128,12 +128,22 @@ public class ClientsDAO {
             Transaction transaction = session.beginTransaction();
 
             List<Obligation> obligations = client.getObligations();
+            if (obligations.size() == 0){
+                System.out.println("All obligations are paid");
+                return;
+            }
             double totalAmount = 0.0;
             for (Obligation obligation : obligations) {
                 totalAmount += obligation.getAmount();
             }
             if (client.getFinances() >= totalAmount){
                 client.setFinances(client.getFinances()-totalAmount);
+                session.saveOrUpdate(client);
+                // Remove all obligations associated with the client
+                obligations.forEach(obligation -> obligation.setClient(null));
+                obligations.clear();
+//                obligations.removeAll(obligations);
+//                session.saveOrUpdate(obligations);
                 transaction.commit();
             }
             else {
@@ -141,6 +151,7 @@ public class ClientsDAO {
             }
         }
     }
+    //Both the client and the company can che ck if the client has more obligations
     public static void IsThereObligationsThatAreNotPaid(Client client){
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();

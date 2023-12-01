@@ -9,35 +9,38 @@ import org.example.dao.DriverEmployeeDAO;
 import org.example.dao.TransportCompanyDAO;
 import org.example.dao.TransportVehicleDAO;
 
+import java.util.ArrayList;
 
 
 //TODO: Think about the TransportCompany's properities (the collections) and their DAOS
 
-//TODO: think about some constraints like: changing the name of the DriverEmployee shouldn't be possible
-
 //TODO: check when a driveremployee changes his company. He shouldn't be present in the old company that he worked for.
 // Maybe you can do that by using cascade = CascadeType.ALL
 
-
-
-
-
-
-//TODO:6. Начин за записване на това, дали клиентът си е платил задълженията.
 //TODO:think about the case in which the client wants to change his company but still has obligations to the previous company
+
+
+//7. Сортиране и филтриране на данните по различни критерии:
+//        a. За компаниите по име и приходи.
+//        b. За служителите по квалификация и заплата.
+//        c. За превозите по дестинация.
+
+
 
 public class Main {
     public static void main(String[] args) {
        var session = SessionFactoryUtil.getSessionFactory().openSession();
-     //   this.client = client;
-    //    this.amount = amount;
-        TransportCompany tc = TransportCompanyDAO.getCompanyById(1);
-        Client client = new Client("Ivan", tc, 5000);
-        ClientsDAO.createClient(client);
-       // Client client = ClientsDAO.getClientById();
-        Obligation obligation = new Obligation(client, 200.0, tc);
-
-        TransportCompanyDAO.addObligation(obligation, client);
+//        this.finances = finances;
+//        this.obligations = new ArrayList<>();
+//        this.Name = name;
+//        this.company = company;
+        TransportCompany tc =TransportCompanyDAO.getCompanyById(1);
+      // Client client = new Client( "Ivancho", tc,1000);
+      var getclient = ClientsDAO.getClientById(13);
+   //   Obligation obligation = new Obligation(getclient, 300.0);
+   //   TransportCompanyDAO.addObligation(obligation, getclient);
+     ClientsDAO.PayAllObligations(getclient);
+//TransportCompanyDAO.IsThereObligationsThatAreNotPaid(client);
 
     }
 
@@ -90,3 +93,17 @@ public class Main {
 //        TransportVehicle tv = new TransportVehicle(vt,tc, transportContent, null);
 //
 //        TransportVehicleDAO.createTransportVehicle(tv, session);
+
+
+
+// Client client = ClientsDAO.getClientById();
+//        Obligation obligation = new Obligation(client, 200.0, tc);
+//
+//        TransportCompanyDAO.addObligation(obligation, client);
+
+
+//   this.client = client;
+//    this.amount = amount;
+//        TransportCompany tc = TransportCompanyDAO.getCompanyById(1);
+//        Client client = new Client("Ivan", tc, 5000);
+//        ClientsDAO.createClient(client);

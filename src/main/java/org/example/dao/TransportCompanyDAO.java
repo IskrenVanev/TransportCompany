@@ -85,6 +85,23 @@ public class TransportCompanyDAO {
         }
 
     }
+
+//Both the client and the company can che ck if the client has more obligations
+    public static void IsThereObligationsThatAreNotPaid(Client client){
+        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            List<Obligation> NotPaidObligations =   client.getObligations();
+            if (NotPaidObligations != null){
+                System.out.println("There are more obligations that the client has to pay for");
+            }
+            else {
+                System.out.println("All obligations are paid");
+            }
+
+        }
+
+
+    }
 }
 
 

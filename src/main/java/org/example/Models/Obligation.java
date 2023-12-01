@@ -31,7 +31,7 @@ public class Obligation {
     public Obligation() {
     }
 
-    public Obligation(Client client, Double amount, TransportCompany company) {
+    public Obligation(Client client, Double amount) {
 
       //  this.company =company;
         this.client = client;

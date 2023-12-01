@@ -16,7 +16,7 @@ public class Client {
     private long id;
     private String Name;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "client",fetch = FetchType.EAGER ,cascade = CascadeType.ALL)
     private List<Obligation> obligations;
 
 
