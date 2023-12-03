@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-//TODO:6. Начин за записване на това, дали клиентът си е платил задълженията.
 @Entity
 @Table(name = "Client")
 public class Client {
@@ -16,11 +15,11 @@ public class Client {
     private long id;
     private String Name;
 
-    @OneToMany(mappedBy = "client",fetch = FetchType.EAGER ,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "client",fetch = FetchType.EAGER )
     private List<Obligation> obligations;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private TransportCompany company;
 
 

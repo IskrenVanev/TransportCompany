@@ -7,6 +7,7 @@ import org.example.Models.TransportCompany;
 import org.example.configuration.SessionFactoryUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.util.List;
 
@@ -91,7 +92,7 @@ public class TransportCompanyDAO {
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             List<Obligation> NotPaidObligations =   client.getObligations();
-            if (NotPaidObligations != null){
+            if (NotPaidObligations != null && !NotPaidObligations.stream().allMatch(Obligation::isDeleted)){
                 System.out.println("There are more obligations that the client has to pay for");
             }
             else {
@@ -101,6 +102,42 @@ public class TransportCompanyDAO {
         }
 
 
+    }
+    public static void SortCompaniesByName() {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            // HQL query to retrieve TransportCompany entities and order them by name
+            String hql = "FROM TransportCompany ORDER BY name";
+            Query<TransportCompany> query = session.createQuery(hql, TransportCompany.class);
+            List<TransportCompany> companies = query.getResultList();
+
+            // Iterate through the sorted list
+            for (TransportCompany company : companies) {
+                System.out.println(company.getName());
+                // You can perform any additional operations with the sorted companies here
+            }
+
+            transaction.commit();
+        }
+    }
+    public static void SortCompaniesByIncome() { //DESCENDING
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            // HQL query to retrieve TransportCompany entities and order them by name
+            String hql = "FROM TransportCompany ORDER BY income DESC";
+            Query<TransportCompany> query = session.createQuery(hql, TransportCompany.class);
+            List<TransportCompany> companies = query.getResultList();
+
+            // Iterate through the sorted list
+            for (TransportCompany company : companies) {
+                System.out.println(company.getName());
+                // You can perform any additional operations with the sorted companies here
+            }
+
+            transaction.commit();
+        }
     }
 }
 

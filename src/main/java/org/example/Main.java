@@ -18,12 +18,8 @@ import java.util.ArrayList;
 // Maybe you can do that by using cascade = CascadeType.ALL
 
 //TODO:think about the case in which the client wants to change his company but still has obligations to the previous company
+//TODO:what if the client is a client of a few companies think about that PayAllObligations
 
-
-//7. Сортиране и филтриране на данните по различни критерии:
-//        a. За компаниите по име и приходи.
-//        b. За служителите по квалификация и заплата.
-//        c. За превозите по дестинация.
 
 
 
@@ -34,17 +30,37 @@ public class Main {
 //        this.obligations = new ArrayList<>();
 //        this.Name = name;
 //        this.company = company;
-        TransportCompany tc =TransportCompanyDAO.getCompanyById(1);
+
+
       // Client client = new Client( "Ivancho", tc,1000);
-      var getclient = ClientsDAO.getClientById(13);
+    //
    //   Obligation obligation = new Obligation(getclient, 300.0);
    //   TransportCompanyDAO.addObligation(obligation, getclient);
-     ClientsDAO.PayAllObligations(getclient);
+  //   ClientsDAO.PayAllObligations(getclient);
 //TransportCompanyDAO.IsThereObligationsThatAreNotPaid(client);
 
+//        ClientsDAO.PayAllObligations(client);
+        var client = ClientsDAO.getClientById(1);
+  //   Obligation obligation = new Obligation(client, 300.0);
+  //   TransportCompanyDAO.addObligation(obligation, client);
+
+      //  ClientsDAO.PayObligation(18, client);
+        //ClientsDAO.IsThereObligationsThatAreNotPaid(client);
+
+       // TransportCompanyDAO.IsThereObligationsThatAreNotPaid(client);
+
+        TransportCompanyDAO.SortCompaniesByIncome();
     }
 
 }
+//        Obligation obligation = new Obligation(client, 300.0);
+//        TransportCompanyDAO.addObligation(obligation, client);
+//        TransportCompany tc = new TransportCompany("Qskr2");
+//        TransportCompanyDAO.createCompany(tc);
+//        TransportCompanyDAO.SortCompaniesByName();
+//var client = ClientsDAO.getClientById(1);
+//ClientsDAO.PayObligation(1, client);
+//TransportCompanyDAO.IsThereObligationsThatAreNotPaid(client);
 //System.out.println( ClientsDAO.getClients());
  //       System.out.println("Hello world!");
 //  ClientsDAO.deleteClientById(2);

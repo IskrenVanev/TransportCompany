@@ -10,7 +10,7 @@ public class Obligation {
     private Long id;
 
 
-
+private boolean isDeleted;
 
     @Column(name = "amount")
     private Double amount;
@@ -34,6 +34,7 @@ public class Obligation {
     public Obligation(Client client, Double amount) {
 
       //  this.company =company;
+        this.isDeleted = false;
         this.client = client;
         this.amount = amount;
     }
@@ -41,6 +42,14 @@ public class Obligation {
    // public void setCompany(TransportCompany company) {
    //     this.company = company;
    // }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
 
     public void setAmount(Double amount) {
         this.amount = amount;

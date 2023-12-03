@@ -107,12 +107,24 @@ public class ClientsDAO {
     public static void PayObligation(int obligationId , Client client) throws NotEnoughFundsException{
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
+            TransportCompany tc = client.getCompany();
+           // List<Obligation> obligations = client.getObligations();
             Obligation getObligation = session.get(Obligation.class, obligationId);
-            if (getObligation != null){
+            if (getObligation != null && getObligation.isDeleted() == false){
                // client.getObligation(obligationId);
+
                 double amountToPay = getObligation.getAmount();
                 if (client.getFinances() >= amountToPay){
-                    client.setFinances(client.getFinances()-amountToPay);
+                    tc.setIncome(tc.getIncome() + (long) amountToPay);//continue this logic
+                    session.merge(tc);
+                    client.setFinances(client.getFinances() - amountToPay);
+                   // client.getObligations().remove(getObligation);
+                   // getObligation.setClient(null);
+                    getObligation.setDeleted(true);
+                    session.saveOrUpdate(getObligation);
+
+                    session.merge(client);
+
                     transaction.commit();
                 }
                 else {
@@ -128,22 +140,39 @@ public class ClientsDAO {
             Transaction transaction = session.beginTransaction();
 
             List<Obligation> obligations = client.getObligations();
+            TransportCompany tc = client.getCompany();
+
+
+
             if (obligations.size() == 0){
                 System.out.println("All obligations are paid");
                 return;
             }
+
+
             double totalAmount = 0.0;
             for (Obligation obligation : obligations) {
                 totalAmount += obligation.getAmount();
             }
             if (client.getFinances() >= totalAmount){
                 client.setFinances(client.getFinances()-totalAmount);
+                // Set isDeleted to true only for obligations with isDeleted = false
+                obligations.stream()
+                        .filter(obligation -> !obligation.isDeleted())
+                        .forEach(obligation -> obligation.setDeleted(true));
+
+                for (Obligation obligation : obligations){
+                    session.saveOrUpdate(obligation);
+                }
+               // obligations.clear();
+
                 session.saveOrUpdate(client);
                 // Remove all obligations associated with the client
-                obligations.forEach(obligation -> obligation.setClient(null));
-                obligations.clear();
-//                obligations.removeAll(obligations);
-//                session.saveOrUpdate(obligations);
+
+
+                tc.setIncome(tc.getIncome() + (long) totalAmount);//continue this logic
+                session.saveOrUpdate(tc);
+
                 transaction.commit();
             }
             else {
@@ -156,7 +185,7 @@ public class ClientsDAO {
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
           List<Obligation> NotPaidObligations =   client.getObligations();
-          if (NotPaidObligations != null){
+          if (NotPaidObligations != null && !NotPaidObligations.stream().allMatch(Obligation::isDeleted)){
               System.out.println("There are more obligations that the client has to pay for");
           }
           else {

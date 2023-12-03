@@ -12,7 +12,7 @@ public class TransportCompany {
     private long id;
 
     private String name;
-
+    private long income;
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     private Set<DriverEmployee> driverEmployees = new HashSet<>();
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
@@ -33,6 +33,7 @@ public class TransportCompany {
 
     public TransportCompany(String name) {
        // this.obligations = new ArrayList<>();
+        this.income = 0;
         this.name = name;
 
     }
@@ -40,6 +41,7 @@ public class TransportCompany {
    //     obligations.add(obligation);
 
   //  }
+
     public long getId() {
         return id;
     }
@@ -83,6 +85,14 @@ public class TransportCompany {
 
     public void setClients(List<Client> clients) {
         this.clients = clients;
+    }
+
+    public void setIncome(long income) {
+        this.income = income;
+    }
+
+    public long getIncome() {
+        return income;
     }
 
     @Override

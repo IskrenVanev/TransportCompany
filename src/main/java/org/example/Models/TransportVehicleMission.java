@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
-//TODO: 5. Възможност за записване на данни за превозите (дестинация, товар, цена и др.)
+
 
 
 @Entity
