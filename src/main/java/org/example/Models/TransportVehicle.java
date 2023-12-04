@@ -20,8 +20,8 @@ public class TransportVehicle {
     private VehicleType vehicleType;
     @ManyToOne(fetch = FetchType.EAGER)
     private TransportCompany company;
-    @OneToOne(mappedBy = "transportVehicle", fetch = FetchType.EAGER)
-    private TransportContent transportContent;
+    //@OneToOne(mappedBy = "transportVehicle", fetch = FetchType.EAGER)
+   // private TransportContent transportContent;
 
     @OneToMany(mappedBy = "vehicle", fetch = FetchType.EAGER)
     private List<TransportVehicleMission> missions= new ArrayList<>();
@@ -29,15 +29,19 @@ public class TransportVehicle {
     public TransportVehicle() {
     }
 
-    public TransportVehicle(VehicleType vehicleType, TransportCompany company, TransportContent transportContent, List<TransportVehicleMission> missions) {
+    public TransportVehicle(VehicleType vehicleType, TransportCompany company,  List<TransportVehicleMission> missions) {
         this.vehicleType = vehicleType;
         this.company = company;
-        this.transportContent = transportContent;
+
         this.missions = missions;
     }
 
     public long getId() {
         return id;
+    }
+
+    public List<TransportVehicleMission> getMissions() {
+        return missions;
     }
 
     public void setVehicleType(VehicleType vehicleType) {
@@ -48,9 +52,9 @@ public class TransportVehicle {
         this.company = company;
     }
 
-    public void setTransportContent(TransportContent transportContent) {
-        this.transportContent = transportContent;
-    }
+   // public void setTransportContent(TransportContent transportContent) {
+      //  this.transportContent = transportContent;
+ //   }
 
     public void setMissions(List<TransportVehicleMission> missions) {
         this.missions = missions;
@@ -61,8 +65,7 @@ public class TransportVehicle {
         return "TransportVehicle{" +
                 "id=" + id +
                 ", vehicleType=" + vehicleType +
-                ", company=" + company +
-                ", transportContent=" + transportContent +
+                ", company=" + company  +
                 '}';
     }
 
@@ -74,7 +77,7 @@ public class TransportVehicle {
         return company;
     }
 
-    public TransportContent getTransportContent() {
-        return transportContent;
-    }
+   // public TransportContent getTransportContent() {
+   //     return transportContent;
+   // }
 }

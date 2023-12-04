@@ -9,6 +9,7 @@ import org.example.dao.DriverEmployeeDAO;
 import org.example.dao.TransportCompanyDAO;
 import org.example.dao.TransportVehicleDAO;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 
@@ -20,39 +21,81 @@ import java.util.ArrayList;
 //TODO:think about the case in which the client wants to change his company but still has obligations to the previous company
 //TODO:what if the client is a client of a few companies think about that PayAllObligations
 
-
+//TODO: use DTO's instead of real models from the database in DAO
 
 
 public class Main {
     public static void main(String[] args) {
        var session = SessionFactoryUtil.getSessionFactory().openSession();
+
+       var tc = TransportCompanyDAO.getCompanyById(1);
+
+        TransportContent transportContent1 = new TransportContent();
+        TransportContent transportContent2 = new TransportContent();
+        var driver = DriverEmployeeDAO.getDriverById(3);
+        TransportVehicle tv1 = new TransportVehicle();
+        TransportVehicle tv2 = new TransportVehicle();
+
+
+        TransportVehicleMission mission = new TransportVehicleMission(
+                "New York",
+                "Las Vegas",
+                LocalDate.of(2023, 12, 1),  // Date of Departure: December 1, 2023
+                LocalDate.of(2023, 12, 10), // Date of Arrival: December 10, 2023
+                1500.0,                      // Price for Mission
+                tv1,     // Assuming you have a default constructor for TransportVehicle
+                transportContent1       // Assuming you have a default constructor for TransportContent
+        );
+        TransportVehicleMission mission2 = new TransportVehicleMission(
+                "New York",
+                "Las Vegas 2",
+                LocalDate.of(2023, 12, 1),  // Date of Departure: December 1, 2023
+                LocalDate.of(2023, 12, 14), // Date of Arrival: December 10, 2023
+                1500.0,                      // Price for Mission
+                tv2,     // Assuming you have a default constructor for TransportVehicle
+                transportContent2      // Assuming you have a default constructor for TransportContent
+        );
+
+        TransportCompanyDAO.addMission(mission, tc, tv1);
+
+    }
+
+}
+
+// var qualification = new Qualification("D1", driver);
+// DriverEmployeeDAO.addQualification(qualification, driver);
+
+
+//  var employee = new DriverEmployee("IskrenDriver2", tc);
+// var qualification = new Qualification("C1", employee);
+// DriverEmployeeDAO.createDriverEmployee(employee);
+// DriverEmployeeDAO.addQualification(qualification, employee);
+
+// TransportCompanyDAO.SortCompaniesByIncome();
+
+
+//   Obligation obligation = new Obligation(client, 300.0);
+//   TransportCompanyDAO.addObligation(obligation, client);
+
+//  ClientsDAO.PayObligation(18, client);
+//ClientsDAO.IsThereObligationsThatAreNotPaid(client);
+
+// TransportCompanyDAO.IsThereObligationsThatAreNotPaid(client);
+
 //        this.finances = finances;
 //        this.obligations = new ArrayList<>();
 //        this.Name = name;
 //        this.company = company;
 
 
-      // Client client = new Client( "Ivancho", tc,1000);
-    //
-   //   Obligation obligation = new Obligation(getclient, 300.0);
-   //   TransportCompanyDAO.addObligation(obligation, getclient);
-  //   ClientsDAO.PayAllObligations(getclient);
+// Client client = new Client( "Ivancho", tc,1000);
+//
+//   Obligation obligation = new Obligation(getclient, 300.0);
+//   TransportCompanyDAO.addObligation(obligation, getclient);
+//   ClientsDAO.PayAllObligations(getclient);
 //TransportCompanyDAO.IsThereObligationsThatAreNotPaid(client);
 
 //        ClientsDAO.PayAllObligations(client);
-        var client = ClientsDAO.getClientById(1);
-  //   Obligation obligation = new Obligation(client, 300.0);
-  //   TransportCompanyDAO.addObligation(obligation, client);
-
-      //  ClientsDAO.PayObligation(18, client);
-        //ClientsDAO.IsThereObligationsThatAreNotPaid(client);
-
-       // TransportCompanyDAO.IsThereObligationsThatAreNotPaid(client);
-
-        TransportCompanyDAO.SortCompaniesByIncome();
-    }
-
-}
 //        Obligation obligation = new Obligation(client, 300.0);
 //        TransportCompanyDAO.addObligation(obligation, client);
 //        TransportCompany tc = new TransportCompany("Qskr2");

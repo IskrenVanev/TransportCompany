@@ -1,15 +1,16 @@
 package org.example.dao;
 
 import org.example.CustomExceptions.NoCompanyException;
-import org.example.Models.Client;
-import org.example.Models.Obligation;
-import org.example.Models.TransportCompany;
+import org.example.Models.*;
 import org.example.configuration.SessionFactoryUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TransportCompanyDAO {
     public static void createCompany(TransportCompany company) {
@@ -135,6 +136,68 @@ public class TransportCompanyDAO {
                 System.out.println(company.getName());
                 // You can perform any additional operations with the sorted companies here
             }
+
+            transaction.commit();
+        }
+    }
+
+//Test these
+    public static void sortByQualification(TransportCompany tc, DriverEmployee employee){
+        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            if (employee == null) {
+                throw new IllegalArgumentException("DriverEmployee cannot be null.");
+            }
+
+
+            // Get the qualifications and print them to the console
+            Set<Qualification> qualifications = employee.getQualifications();
+            if (qualifications != null) {
+                for (Qualification qualification : qualifications) {
+                    System.out.println("Qualification Name: " + qualification.getName());
+                }
+            } else {
+                System.out.println("DriverEmployee has no qualifications.");
+            }
+
+
+
+            transaction.commit();
+        }
+    }
+    public static void sortBySalary(TransportCompany tc){
+        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            if (tc == null) {
+                throw new IllegalArgumentException("TransportCompany cannot be null.");
+            }
+            tc.getDriverEmployees()
+                    .stream()
+                    .sorted(Comparator.comparing(DriverEmployee::getSalary).reversed())
+                    .forEach(driverEmployee ->
+                            System.out.println("DriverEmployee ID: " + driverEmployee.getId() +
+                                    ", Salary: " + driverEmployee.getSalary()));
+
+
+            transaction.commit();
+        }
+    }
+
+//test this
+    public static void addMission(TransportVehicleMission tvm, TransportCompany tc, TransportVehicle tv){
+        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            if (tvm == null || tc == null || tv == null)throw new IllegalArgumentException("parameters cannot be null.");
+            tvm.setVehicle(tv);
+            tv.getMissions().add(tvm);
+            tc.getVehicles().add(tv);
+
+            session.saveOrUpdate(tvm);
+            session.saveOrUpdate(tv);
+            session.saveOrUpdate(tc);
+
 
             transaction.commit();
         }

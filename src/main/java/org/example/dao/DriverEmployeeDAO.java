@@ -4,13 +4,17 @@ import org.example.CustomExceptions.NoCompanyException;
 import org.example.CustomExceptions.NoDriverEmployeeFoundException;
 import org.example.CustomExceptions.NoTransportVehicleFoundException;
 import org.example.Models.DriverEmployee;
+import org.example.Models.Qualification;
 import org.example.Models.TransportCompany;
 import org.example.configuration.SessionFactoryUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DriverEmployeeDAO {
     public static void createDriverEmployee(DriverEmployee driverEmployee) {
@@ -76,11 +80,31 @@ public class DriverEmployeeDAO {
             transaction.commit();
         }
     }
+//Test
+    public static void addQualification(Qualification qualification, DriverEmployee driverEmployee) {
+        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            if (qualification == null) {
+                throw new IllegalArgumentException("qualification cannot be null.");
+            }
+            if (driverEmployee == null) {
+                throw new IllegalArgumentException("driverEmployee cannot be null.");
+            }
+
+            driverEmployee.getQualifications().add(qualification);
+            session.saveOrUpdate(qualification);
+            session.saveOrUpdate(driverEmployee);
+
+            transaction.commit();
+        }
+    }
 
 
 
+    }
 
-}
+
+
 
 
 

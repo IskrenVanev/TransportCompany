@@ -11,8 +11,8 @@ public class TransportContent {//either people or stock
     private long id;
     @Enumerated(EnumType.STRING)
     private ContentType content;//PEOPLE, STOCK
-    @OneToOne(fetch = FetchType.LAZY)
-    private TransportVehicle transportVehicle;
+  //  @OneToOne(fetch = FetchType.LAZY)
+  //  private TransportVehicle transportVehicle;
 
     @OneToOne(fetch = FetchType.LAZY)
     private TransportVehicleMission mission;
@@ -27,10 +27,10 @@ public class TransportContent {//either people or stock
     public TransportContent() {
     }
 
-    public TransportContent(long id, ContentType content, TransportVehicle transportVehicle, Double weight) {
+    public TransportContent(long id, ContentType content,  Double weight) {
         this.id = id;
         this.content = content;
-        this.transportVehicle = transportVehicle;
+      //  this.transportVehicle = transportVehicle;
         if (content==ContentType.STOCK) {
             this.weight = weight; // Replace with your calculation logic
         } else {
@@ -52,9 +52,9 @@ public class TransportContent {//either people or stock
         return content;
     }
 
-    public TransportVehicle getTransportVehicle() {
-        return transportVehicle;
-    }
+   // public TransportVehicle getTransportVehicle() {
+  //     return transportVehicle;
+  // }
 
     public double getWeight() {
         return weight;
@@ -64,9 +64,9 @@ public class TransportContent {//either people or stock
         this.content = content;
     }
 
-    public void setTransportVehicle(TransportVehicle transportVehicle) {
-        this.transportVehicle = transportVehicle;
-    }
+  //  public void setTransportVehicle(TransportVehicle transportVehicle) {
+  //      this.transportVehicle = transportVehicle;
+  //  }
 
     public void setWeight(Double weight) {
         this.weight = weight;

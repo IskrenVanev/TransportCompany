@@ -13,14 +13,14 @@ public class TransportCompany {
 
     private String name;
     private long income;
-    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
     private Set<DriverEmployee> driverEmployees = new HashSet<>();
-    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
     private List<TransportVehicle> vehicles = new ArrayList<>();
-    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
-    private List<TransportVehicleMission> missions = new ArrayList<>();
+  //  @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
+  //  private List<TransportVehicleMission> missions = new ArrayList<>();
 
-    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
     private List<Client> clients = new ArrayList<>();
 
 
@@ -63,9 +63,9 @@ public class TransportCompany {
     }
 
 
-    public List<TransportVehicleMission> getMissions() {
-        return missions;
-    }
+ //   public List<TransportVehicleMission> getMissions() {
+ //       return missions;
+  //  }
 
     public List<Client> getClients() {
         return clients;
@@ -79,9 +79,9 @@ public class TransportCompany {
         this.vehicles = vehicles;
     }
 
-    public void setMissions(List<TransportVehicleMission> missions) {
-        this.missions = missions;
-    }
+  //  public void setMissions(List<TransportVehicleMission> missions) {
+   //     this.missions = missions;
+ //   }
 
     public void setClients(List<Client> clients) {
         this.clients = clients;
