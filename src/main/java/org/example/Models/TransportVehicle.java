@@ -6,6 +6,7 @@ import org.example.Models.Enums.VehicleType;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "TransportVehicle")
@@ -67,6 +68,19 @@ public class TransportVehicle {
                 ", vehicleType=" + vehicleType +
                 ", company=" + company  +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TransportVehicle vehicle = (TransportVehicle) o;
+        return id == vehicle.id && vehicleType == vehicle.vehicleType && Objects.equals(company, vehicle.company) && Objects.equals(missions, vehicle.missions);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, vehicleType, company, missions);
     }
 
     public VehicleType getVehicleType() {

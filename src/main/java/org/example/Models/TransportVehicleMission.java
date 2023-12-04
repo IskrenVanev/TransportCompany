@@ -3,8 +3,7 @@ package org.example.Models;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-
-
+import java.util.Objects;
 
 
 @Entity
@@ -19,6 +18,8 @@ public class TransportVehicleMission {
     private LocalDate dateOfArrival;
 
     private double PriceForMission;
+
+
 
 
     public TransportVehicleMission(String departureStartingPoint,
@@ -116,5 +117,18 @@ public class TransportVehicleMission {
 
     public void setContent(TransportContent content) {
         this.content = content;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TransportVehicleMission that = (TransportVehicleMission) o;
+        return id == that.id && Double.compare(that.PriceForMission, PriceForMission) == 0 && Objects.equals(departureStartingPoint, that.departureStartingPoint) && Objects.equals(departureArrivalPoint, that.departureArrivalPoint) && Objects.equals(dateOfDeparture, that.dateOfDeparture) && Objects.equals(dateOfArrival, that.dateOfArrival) && Objects.equals(vehicle, that.vehicle) && Objects.equals(content, that.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, departureStartingPoint, departureArrivalPoint, dateOfDeparture, dateOfArrival, PriceForMission, vehicle, content);
     }
 }

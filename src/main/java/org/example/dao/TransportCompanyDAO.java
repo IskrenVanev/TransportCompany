@@ -1,12 +1,16 @@
 package org.example.dao;
 
 import org.example.CustomExceptions.NoCompanyException;
+import org.example.CustomExceptions.NoTransportVehicleFoundException;
 import org.example.Models.*;
 import org.example.configuration.SessionFactoryUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -186,18 +190,45 @@ public class TransportCompanyDAO {
     }
 
 //test this
-    public static void addMission(TransportVehicleMission tvm, TransportCompany tc, TransportVehicle tv){
+    public static void addMission(TransportVehicleMission tvm,  TransportVehicle tv){
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            if (tvm == null || tc == null || tv == null)throw new IllegalArgumentException("parameters cannot be null.");
+            if (tvm == null || tv == null)throw new IllegalArgumentException("parameters cannot be null.");
             tvm.setVehicle(tv);
             tv.getMissions().add(tvm);
-            tc.getVehicles().add(tv);
+            //tc.getVehicles().add(tv);
 
             session.saveOrUpdate(tvm);
             session.saveOrUpdate(tv);
-            session.saveOrUpdate(tc);
+           // session.saveOrUpdate(tc);
 
+
+            transaction.commit();
+        }
+    }
+    public static void sortMissionsByDistance(TransportCompany tc) throws NoTransportVehicleFoundException {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            LocalDate currentDate = LocalDate.now();
+            var missions = tc.getVehicles()
+                    .stream()
+                    .flatMap(transportVehicle -> transportVehicle.getMissions().stream())
+                    .sorted(Comparator.comparing(
+                                    mission -> Math.abs(ChronoUnit.DAYS.between(mission.getDateOfArrival(), mission.getDateOfDeparture()))
+                            )
+                    )
+                    .collect(Collectors.toList()); // Collect the sorted missions into a list
+
+// Reverse the list
+            Collections.reverse(missions);
+
+// Print the reversed list to the console
+            missions.forEach(mission ->
+                    System.out.println("Mission ID: " + mission.getId() +
+                            ", Date of Departure: " + mission.getDateOfDeparture()));
+//                    .forEach(mission ->
+//                            System.out.println("Mission ID: " + mission.getId() +
+//                                    ", Date of Departure: " + mission.getDateOfDeparture()));
 
             transaction.commit();
         }

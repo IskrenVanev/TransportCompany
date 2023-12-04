@@ -30,37 +30,47 @@ public class Main {
 
        var tc = TransportCompanyDAO.getCompanyById(1);
 
-        TransportContent transportContent1 = new TransportContent();
-        TransportContent transportContent2 = new TransportContent();
-        var driver = DriverEmployeeDAO.getDriverById(3);
-        TransportVehicle tv1 = new TransportVehicle();
-        TransportVehicle tv2 = new TransportVehicle();
 
 
-        TransportVehicleMission mission = new TransportVehicleMission(
-                "New York",
-                "Las Vegas",
-                LocalDate.of(2023, 12, 1),  // Date of Departure: December 1, 2023
-                LocalDate.of(2023, 12, 10), // Date of Arrival: December 10, 2023
-                1500.0,                      // Price for Mission
-                tv1,     // Assuming you have a default constructor for TransportVehicle
-                transportContent1       // Assuming you have a default constructor for TransportContent
-        );
-        TransportVehicleMission mission2 = new TransportVehicleMission(
-                "New York",
-                "Las Vegas 2",
-                LocalDate.of(2023, 12, 1),  // Date of Departure: December 1, 2023
-                LocalDate.of(2023, 12, 14), // Date of Arrival: December 10, 2023
-                1500.0,                      // Price for Mission
-                tv2,     // Assuming you have a default constructor for TransportVehicle
-                transportContent2      // Assuming you have a default constructor for TransportContent
-        );
 
-        TransportCompanyDAO.addMission(mission, tc, tv1);
+
 
     }
 
 }
+// TransportCompanyDAO.sortMissionsByDistance(tc);
+
+//  TransportContent transportContent1 = new TransportContent(ContentType.PEOPLE, null);
+//  TransportContent transportContent2 = new TransportContent(ContentType.PEOPLE, null);
+//  var driver = DriverEmployeeDAO.getDriverById(3);
+//
+//
+//
+//  TransportVehicle tv1 = new TransportVehicle(VehicleType.BUS, tc, new ArrayList<TransportVehicleMission>());
+//  TransportVehicle tv2 = new TransportVehicle(VehicleType.BUS, tc, new ArrayList<TransportVehicleMission>());
+
+
+//     TransportVehicleMission mission = new TransportVehicleMission(
+//             "New York",
+//             "Las Vegas",
+//             LocalDate.of(2023, 12, 1),  // Date of Departure: December 1, 2023
+//             LocalDate.of(2023, 12, 10), // Date of Arrival: December 10, 2023
+//             1500.0,                      // Price for Mission
+//             tv1,     // Assuming you have a default constructor for TransportVehicle
+//             transportContent1       // Assuming you have a default constructor for TransportContent
+//     );
+// TransportVehicleMission mission2 = new TransportVehicleMission(
+//         "New York",
+//         "Las Vegas 2",
+//         LocalDate.of(2023, 11, 3),  // Date of Departure: December 1, 2023
+//         LocalDate.of(2023, 12, 14), // Date of Arrival: December 10, 2023
+//         1500.0,                      // Price for Mission
+//         tv2,     // Assuming you have a default constructor for TransportVehicle
+//         transportContent2      // Assuming you have a default constructor for TransportContent
+// );
+
+//  TransportCompanyDAO.addMission(mission2, tv2);
+
 
 // var qualification = new Qualification("D1", driver);
 // DriverEmployeeDAO.addQualification(qualification, driver);

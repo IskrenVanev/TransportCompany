@@ -27,8 +27,8 @@ public class TransportContent {//either people or stock
     public TransportContent() {
     }
 
-    public TransportContent(long id, ContentType content,  Double weight) {
-        this.id = id;
+    public TransportContent( ContentType content,  Double weight) {
+
         this.content = content;
       //  this.transportVehicle = transportVehicle;
         if (content==ContentType.STOCK) {
