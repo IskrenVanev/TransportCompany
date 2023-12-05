@@ -1,5 +1,9 @@
 package org.example;
 
+import org.example.DTO.ClientDTO;
+import org.example.DTO.DriverEmployeeDTO;
+import org.example.DTO.TransportCompanyDTO;
+import org.example.DTO.TransportVehicleDTO;
 import org.example.Models.*;
 import org.example.Models.Enums.ContentType;
 import org.example.Models.Enums.VehicleType;
@@ -34,10 +38,14 @@ public class Main {
 
 
 
-
     }
 
 }
+
+// var list = TransportVehicleDAO.getTransportVehiclesDTO(1);
+//   for (TransportVehicleDTO tv: list) {
+//        System.out.println(tv);
+//   }
 // TransportCompanyDAO.sortMissionsByDistance(tc);
 
 //  TransportContent transportContent1 = new TransportContent(ContentType.PEOPLE, null);

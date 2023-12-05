@@ -2,7 +2,8 @@ package org.example.dao;
 
 import org.example.CustomExceptions.NoTransportVehicleFoundException;
 import org.example.DTO.TransportCompanyDTO;
-import org.example.DTO.TransportContentDTO;
+
+import org.example.DTO.TransportVehicleDTO;
 import org.example.Models.Client;
 import org.example.Models.Enums.ContentType;
 import org.example.Models.Enums.VehicleType;
@@ -51,6 +52,24 @@ public class TransportVehicleDAO {
         return transportVehicles;
     }
 
+    public static List<TransportVehicleDTO> getTransportVehiclesDTO(long id) {
+        List<TransportVehicleDTO> transportVehicles;
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            transportVehicles = session.createQuery(
+                            "Select new org.example.DTO.TransportVehicleDTO(tv.id, tv.vehicleType) " +
+                                    "From TransportVehicle tv " + // Fix entity name here
+                                    "where tv.company.id = :id", TransportVehicleDTO.class)
+                    .setParameter("id", id)
+                    .getResultList();
+            transaction.commit();
+        }
+        return transportVehicles;
+    }
+
+
+
+
     public static void updateVehicle(TransportVehicle vehicle) {
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
@@ -58,6 +77,8 @@ public class TransportVehicleDAO {
             transaction.commit();
         }
     }
+
+
 
 
     public static void deleteTransportVehicle(TransportVehicle transportVehicle, Session session) {

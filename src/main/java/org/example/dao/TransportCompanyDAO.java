@@ -2,6 +2,8 @@ package org.example.dao;
 
 import org.example.CustomExceptions.NoCompanyException;
 import org.example.CustomExceptions.NoTransportVehicleFoundException;
+import org.example.DTO.DriverEmployeeDTO;
+import org.example.DTO.TransportCompanyDTO;
 import org.example.Models.*;
 import org.example.configuration.SessionFactoryUtil;
 import org.hibernate.Session;
@@ -46,6 +48,23 @@ public class TransportCompanyDAO {
         }
         return companies;
     }
+    public static List<TransportCompanyDTO> getCompaniesDTO(long id) {
+        List<TransportCompanyDTO> transportCompanyDTOS;
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            transportCompanyDTOS = session.createQuery(
+                            "Select new org.example.DTO.TransportCompanyDTO(tc.id, tc.name) " +
+                                    "From TransportCompany tc " + // Add a space here
+                                    "where tc.id = :id", TransportCompanyDTO.class)
+                    .setParameter("id", id)
+                    .getResultList();
+            transaction.commit();
+        }
+        return transportCompanyDTOS;
+    }
+
+
+
     public static void updateCompany(TransportCompany company) {
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();

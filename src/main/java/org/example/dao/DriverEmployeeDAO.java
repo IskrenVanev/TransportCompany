@@ -3,6 +3,8 @@ package org.example.dao;
 import org.example.CustomExceptions.NoCompanyException;
 import org.example.CustomExceptions.NoDriverEmployeeFoundException;
 import org.example.CustomExceptions.NoTransportVehicleFoundException;
+import org.example.DTO.ClientDTO;
+import org.example.DTO.DriverEmployeeDTO;
 import org.example.Models.DriverEmployee;
 import org.example.Models.Qualification;
 import org.example.Models.TransportCompany;
@@ -40,6 +42,20 @@ public class DriverEmployeeDAO {
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             driverEmployees = session.createQuery("Select c From DriverEmployee c", DriverEmployee.class)
+                    .getResultList();
+            transaction.commit();
+        }
+        return driverEmployees;
+    }
+    public static List<DriverEmployeeDTO> getDriverEmployeesDTO(long id) {
+        List<DriverEmployeeDTO> driverEmployees;
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            driverEmployees = session.createQuery(
+                            "Select new org.example.DTO.DriverEmployeeDTO(de.id, de.name) " +
+                                    "From DriverEmployee de join de.company tc " +
+                                    "where tc.id = :id", DriverEmployeeDTO.class)
+                    .setParameter("id", id)
                     .getResultList();
             transaction.commit();
         }

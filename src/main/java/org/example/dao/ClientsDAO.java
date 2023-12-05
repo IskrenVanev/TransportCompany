@@ -2,6 +2,7 @@ package org.example.dao;
 
 import org.example.CustomExceptions.NoClientException;
 import org.example.CustomExceptions.NotEnoughFundsException;
+import org.example.DTO.ClientDTO;
 import org.example.Models.Client;
 import org.example.Models.Obligation;
 import org.example.Models.TransportCompany;
@@ -43,6 +44,19 @@ public class ClientsDAO {
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             clients = session.createQuery("Select c From Client c", Client.class)
+                    .getResultList();
+            transaction.commit();
+        }
+        return clients;
+    }
+
+    public static List<ClientDTO> getClientsDTO(long id){
+        List<ClientDTO> clients;
+        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            clients = session.createQuery("Select new org.example.DTO.ClientDTO(c.id, c.Name, c.finances) From Client c " +
+                            "join c.company tc " + "where tc.id = :id", ClientDTO.class)
+                    .setParameter("id", id)
                     .getResultList();
             transaction.commit();
         }
