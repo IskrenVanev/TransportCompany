@@ -16,7 +16,7 @@ public class SessionFactoryUtil {
             configuration.addAnnotatedClass(DriverEmployee.class);
             configuration.addAnnotatedClass(TransportCompany.class);
             configuration.addAnnotatedClass(TransportVehicle.class);
-            configuration.addAnnotatedClass(TransportContent.class);
+          //  configuration.addAnnotatedClass(TransportContent.class);
             configuration.addAnnotatedClass(Qualification.class);
             configuration.addAnnotatedClass(TransportVehicleMission.class);
             ServiceRegistry serviceRegistry

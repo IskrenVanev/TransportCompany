@@ -1,6 +1,7 @@
 package org.example.Models;
 
 import jakarta.persistence.*;
+import org.example.Models.Enums.ContentType;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -19,12 +20,12 @@ public class TransportVehicleMission {
 
     private double PriceForMission;
 
-
+    private Double weight;
 
 
     public TransportVehicleMission(String departureStartingPoint,
                                    String departureArrivalPoint, LocalDate dateOfDeparture,
-                                   LocalDate dateOfArrival, double priceForMission, TransportVehicle vehicle, TransportContent content)
+                                   LocalDate dateOfArrival, double priceForMission, TransportVehicle vehicle, ContentType content)
     {
         this.departureStartingPoint = departureStartingPoint;
         this.departureArrivalPoint = departureArrivalPoint;
@@ -34,6 +35,12 @@ public class TransportVehicleMission {
         this.vehicle = vehicle;
        // this.company = company;
         this.content = content;
+        if (content==ContentType.STOCK) {
+            this.weight = weight; // Replace with your calculation logic
+        } else {
+            // Set a default weight or handle other cases
+            this.weight = null;
+        }
     }
 
     public TransportVehicleMission() {
@@ -43,8 +50,8 @@ public class TransportVehicleMission {
     private TransportVehicle vehicle;
   //  @ManyToOne(fetch = FetchType.EAGER)
   //  private TransportCompany company;
-    @OneToOne(mappedBy = "mission", fetch = FetchType.EAGER)
-    private TransportContent content;
+   // @OneToOne(mappedBy = "mission", fetch = FetchType.EAGER)
+    private ContentType content;
 
     @Override
     public String toString() {
@@ -57,6 +64,10 @@ public class TransportVehicleMission {
                 ", PriceForMission=" + PriceForMission +
                 ", vehicle=" + vehicle +
                 '}';
+    }
+
+    public Double getWeight() {
+        return weight;
     }
 
     public long getId() {
@@ -87,7 +98,7 @@ public class TransportVehicleMission {
         return vehicle;
     }
 
-    public TransportContent getContent() {
+    public ContentType getContent() {
         return content;
     }
 
@@ -115,7 +126,7 @@ public class TransportVehicleMission {
         this.vehicle = vehicle;
     }
 
-    public void setContent(TransportContent content) {
+    public void setContent(ContentType content) {
         this.content = content;
     }
 

@@ -13,9 +13,13 @@ import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+
+
 public class ExcelWriter {
 
     public static void writeTransportationData(List<TransportVehicleMission> missionData, String filePath) {
@@ -27,16 +31,28 @@ public class ExcelWriter {
             headerRow.createCell(0).setCellValue("ID");
             headerRow.createCell(1).setCellValue("Date of Departure");
             headerRow.createCell(2).setCellValue("Date of Arrival");
-            // Add more columns as needed
+            headerRow.createCell(3).setCellValue("Departure Starting Point");
+            headerRow.createCell(4).setCellValue("Departure Arrival Point");
+            headerRow.createCell(5).setCellValue("Price for Mission");
+            headerRow.createCell(6).setCellValue("Vehicle Type");
+            headerRow.createCell(7).setCellValue("Content Type");
+            headerRow.createCell(8).setCellValue("Weight");
 
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             // Populate data
             for (int i = 0; i < missionData.size(); i++) {
                 Row row = sheet.createRow(i + 1);
                 TransportVehicleMission rowData = missionData.get(i);
 
                 row.createCell(0).setCellValue(rowData.getId());
-                row.createCell(1).setCellValue(rowData.getDateOfDeparture().toString());
-                row.createCell(2).setCellValue(rowData.getDateOfArrival().toString());
+                row.createCell(1).setCellValue(rowData.getDateOfDeparture().format(formatter));
+                row.createCell(2).setCellValue(rowData.getDateOfArrival().format(formatter));
+                row.createCell(3).setCellValue(rowData.getDepartureStartingPoint().toString());
+                row.createCell(4).setCellValue(rowData.getDepartureArrivalPoint().toString());
+                row.createCell(5).setCellValue(rowData.getPriceForMission());
+                row.createCell(6).setCellValue(rowData.getVehicle().getVehicleType().toString());
+                row.createCell(7).setCellValue(rowData.getContent().toString());
+                row.createCell(8).setCellValue(rowData.getWeight() != null ? rowData.getWeight().toString() : "");
                 // Add more cells as needed
             }
 

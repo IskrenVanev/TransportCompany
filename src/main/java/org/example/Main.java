@@ -4,6 +4,7 @@ import org.example.DTO.ClientDTO;
 import org.example.DTO.DriverEmployeeDTO;
 import org.example.DTO.TransportCompanyDTO;
 import org.example.DTO.TransportVehicleDTO;
+import org.example.ExcelExporter.ExcelWriter;
 import org.example.Models.*;
 import org.example.Models.Enums.ContentType;
 import org.example.Models.Enums.VehicleType;
@@ -13,8 +14,12 @@ import org.example.dao.DriverEmployeeDAO;
 import org.example.dao.TransportCompanyDAO;
 import org.example.dao.TransportVehicleDAO;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 
 //TODO: Think about the TransportCompany's properities (the collections) and their DAOS
@@ -33,9 +38,27 @@ public class Main {
        var session = SessionFactoryUtil.getSessionFactory().openSession();
 
        var tc = TransportCompanyDAO.getCompanyById(1);
+       var tv = TransportVehicleDAO.getTransportVehicleById(10);
+        //TransportContent transportContent = new TransportContent(ContentType.STOCK, null);
 
 
 
+        List<TransportVehicleMission> missionData = tv.getMissions();
+
+
+     String relativeFilePath = "src/main/java/org/example/Excel files/output.xlsx";
+       Path absolutePath = Paths.get(relativeFilePath).toAbsolutePath().normalize();
+
+       File file = absolutePath.toFile();
+       File parentDir = file.getParentFile();
+       if (!parentDir.exists() && !parentDir.mkdirs()) {
+           System.err.println("Failed to create directories: " + parentDir);
+           return;
+       }
+
+       ExcelWriter.writeTransportationData(missionData, absolutePath.toString());
+
+       System.out.println("Excel file generated successfully at: " + absolutePath);
 
 
     }
