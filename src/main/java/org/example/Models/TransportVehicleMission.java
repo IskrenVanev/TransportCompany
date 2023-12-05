@@ -62,12 +62,22 @@ public class TransportVehicleMission {
                 ", dateOfDeparture=" + dateOfDeparture +
                 ", dateOfArrival=" + dateOfArrival +
                 ", PriceForMission=" + PriceForMission +
+                ", weight=" + weight +
                 ", vehicle=" + vehicle +
+                ", content=" + content +
                 '}';
     }
 
     public Double getWeight() {
         return weight;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
     }
 
     public long getId() {

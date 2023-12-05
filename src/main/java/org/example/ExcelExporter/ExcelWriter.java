@@ -34,9 +34,10 @@ public class ExcelWriter {
             headerRow.createCell(3).setCellValue("Departure Starting Point");
             headerRow.createCell(4).setCellValue("Departure Arrival Point");
             headerRow.createCell(5).setCellValue("Price for Mission");
-            headerRow.createCell(6).setCellValue("Vehicle Type");
-            headerRow.createCell(7).setCellValue("Content Type");
-            headerRow.createCell(8).setCellValue("Weight");
+            headerRow.createCell(6).setCellValue("Vehicle id");
+            headerRow.createCell(7).setCellValue("Vehicle Type");
+            headerRow.createCell(8).setCellValue("Content Type");
+            headerRow.createCell(9).setCellValue("Weight");
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             // Populate data
@@ -50,9 +51,10 @@ public class ExcelWriter {
                 row.createCell(3).setCellValue(rowData.getDepartureStartingPoint().toString());
                 row.createCell(4).setCellValue(rowData.getDepartureArrivalPoint().toString());
                 row.createCell(5).setCellValue(rowData.getPriceForMission());
-                row.createCell(6).setCellValue(rowData.getVehicle().getVehicleType().toString());
-                row.createCell(7).setCellValue(rowData.getContent().toString());
-                row.createCell(8).setCellValue(rowData.getWeight() != null ? rowData.getWeight().toString() : "");
+                row.createCell(6).setCellValue(rowData.getVehicle().getId());
+                row.createCell(7).setCellValue(rowData.getVehicle().getVehicleType().toString());
+                row.createCell(8).setCellValue(rowData.getContent().toString());
+                row.createCell(9).setCellValue(rowData.getWeight() != null ? rowData.getWeight().toString() : "");
                 // Add more cells as needed
             }
 

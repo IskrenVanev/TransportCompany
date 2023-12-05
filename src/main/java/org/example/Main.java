@@ -21,6 +21,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.example.ExcelExporter.ExcelReader.readTransportationData;
+
 
 //TODO: Think about the TransportCompany's properities (the collections) and their DAOS
 
@@ -38,32 +40,52 @@ public class Main {
        var session = SessionFactoryUtil.getSessionFactory().openSession();
 
        var tc = TransportCompanyDAO.getCompanyById(1);
-       var tv = TransportVehicleDAO.getTransportVehicleById(10);
-        //TransportContent transportContent = new TransportContent(ContentType.STOCK, null);
 
 
 
-        List<TransportVehicleMission> missionData = tv.getMissions();
 
 
-     String relativeFilePath = "src/main/java/org/example/Excel files/output.xlsx";
-       Path absolutePath = Paths.get(relativeFilePath).toAbsolutePath().normalize();
-
-       File file = absolutePath.toFile();
-       File parentDir = file.getParentFile();
-       if (!parentDir.exists() && !parentDir.mkdirs()) {
-           System.err.println("Failed to create directories: " + parentDir);
-           return;
-       }
-
-       ExcelWriter.writeTransportationData(missionData, absolutePath.toString());
-
-       System.out.println("Excel file generated successfully at: " + absolutePath);
 
 
     }
 
 }
+
+
+//       // var tv = TransportVehicleDAO.getTransportVehicleById(10);
+//
+//        String relativeFilePath = "src/main/java/org/example/Excel files/output.xlsx";
+//        Path absolutePath = Paths.get(relativeFilePath).toAbsolutePath().normalize();
+//        List<TransportVehicleMission> missionData = readTransportationData(absolutePath.toString());
+//
+//        for (TransportVehicleMission mission : missionData) {
+//            System.out.println(mission);
+//        }
+//       var tv = TransportVehicleDAO.getTransportVehicleById(10);
+//        //TransportContent transportContent = new TransportContent(ContentType.STOCK, null);
+//
+//
+//
+//        List<TransportVehicleMission> missionData = tv.getMissions();
+//
+//
+//     String relativeFilePath = "src/main/java/org/example/Excel files/output.xlsx";
+//       Path absolutePath = Paths.get(relativeFilePath).toAbsolutePath().normalize();
+//
+//       File file = absolutePath.toFile();
+//       File parentDir = file.getParentFile();
+//       if (!parentDir.exists() && !parentDir.mkdirs()) {
+//           System.err.println("Failed to create directories: " + parentDir);
+//           return;
+//       }
+//
+//       ExcelWriter.writeTransportationData(missionData, absolutePath.toString());
+//
+//       System.out.println("Excel file generated successfully at: " + absolutePath);
+//
+
+
+
 
 // var list = TransportVehicleDAO.getTransportVehiclesDTO(1);
 //   for (TransportVehicleDTO tv: list) {
