@@ -40,26 +40,26 @@ public class TransportVehicleDAO {
         }
         return transportVehicle;
     }
-    public static TransportVehicle getTransportVehicleByIdWithMissionsAndContent(long id) {
-        TransportVehicle transportVehicle = null;
-        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
-
-            // Fetch the TransportVehicle along with missions and content
-            transportVehicle = session.createQuery(
-                            "SELECT tv FROM TransportVehicle tv LEFT JOIN FETCH tv.missions m LEFT JOIN FETCH m.content WHERE tv.id = :id",
-                            TransportVehicle.class
-                    )
-                    .setParameter("id", id)
-                    .uniqueResult();
-
-            transaction.commit();
-        } catch (Exception e) {
-            // Handle or log the exception as needed
-            e.printStackTrace();
-        }
-        return transportVehicle;
-    }
+   // public static TransportVehicle getTransportVehicleByIdWithMissionsAndContent(long id) {
+   //     TransportVehicle transportVehicle = null;
+   //     try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+   //         Transaction transaction = session.beginTransaction();
+//
+   //         // Fetch the TransportVehicle along with missions and content
+   //         transportVehicle = session.createQuery(
+   //                         "SELECT tv FROM TransportVehicle tv LEFT JOIN FETCH tv.missions m LEFT JOIN FETCH m.content WHERE tv.id = :id",
+   //                         TransportVehicle.class
+   //                 )
+   //                 .setParameter("id", id)
+   //                 .uniqueResult();
+//
+   //         transaction.commit();
+   //     } catch (Exception e) {
+   //         // Handle or log the exception as needed
+   //         e.printStackTrace();
+   //     }
+   //     return transportVehicle;
+   // }
     public static List<TransportVehicle> getTransportVehicles() {
         List<TransportVehicle> transportVehicles;
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {

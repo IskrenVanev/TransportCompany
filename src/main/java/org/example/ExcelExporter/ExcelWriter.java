@@ -38,6 +38,7 @@ public class ExcelWriter {
             headerRow.createCell(7).setCellValue("Vehicle Type");
             headerRow.createCell(8).setCellValue("Content Type");
             headerRow.createCell(9).setCellValue("Weight");
+            headerRow.createCell(10).setCellValue("Driver id");
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             // Populate data
@@ -55,6 +56,7 @@ public class ExcelWriter {
                 row.createCell(7).setCellValue(rowData.getVehicle().getVehicleType().toString());
                 row.createCell(8).setCellValue(rowData.getContent().toString());
                 row.createCell(9).setCellValue(rowData.getWeight() != null ? rowData.getWeight().toString() : "");
+                row.createCell(10).setCellValue(rowData.getDriver() != null ? rowData.getDriver().getId() : 0);
                 // Add more cells as needed
             }
 

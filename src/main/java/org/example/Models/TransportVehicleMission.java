@@ -25,7 +25,7 @@ public class TransportVehicleMission {
 
     public TransportVehicleMission(String departureStartingPoint,
                                    String departureArrivalPoint, LocalDate dateOfDeparture,
-                                   LocalDate dateOfArrival, double priceForMission, TransportVehicle vehicle, ContentType content)
+                                   LocalDate dateOfArrival, double priceForMission, TransportVehicle vehicle, ContentType content, DriverEmployee driver)
     {
         this.departureStartingPoint = departureStartingPoint;
         this.departureArrivalPoint = departureArrivalPoint;
@@ -41,6 +41,7 @@ public class TransportVehicleMission {
             // Set a default weight or handle other cases
             this.weight = null;
         }
+        this.driver = driver;
     }
 
     public TransportVehicleMission() {
@@ -52,6 +53,8 @@ public class TransportVehicleMission {
   //  private TransportCompany company;
    // @OneToOne(mappedBy = "mission", fetch = FetchType.EAGER)
     private ContentType content;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private DriverEmployee driver;
 
     @Override
     public String toString() {
@@ -65,7 +68,16 @@ public class TransportVehicleMission {
                 ", weight=" + weight +
                 ", vehicle=" + vehicle +
                 ", content=" + content +
+                ", driver=" + driver +
                 '}';
+    }
+
+    public void setDriver(DriverEmployee driver) {
+        this.driver = driver;
+    }
+
+    public DriverEmployee getDriver() {
+        return driver;
     }
 
     public Double getWeight() {

@@ -10,19 +10,24 @@ import org.example.configuration.SessionFactoryUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ClientsDAO {
+    //TODO:Check if correct after change of the relationship between tc and client
     public static void createClient(Client client) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
             // Save or update the referenced TransportCompany
-            TransportCompany company = client.getCompany();
-            session.saveOrUpdate(company);
+            var company = client.getTransportCompanies();
+            for (TransportCompany tc : company) {
+                session.saveOrUpdate(tc);
+            }
 
             // Now you can save the Client
-            session.save(client);
+            session.saveOrUpdate(client);
 
             transaction.commit();
         }
@@ -49,29 +54,37 @@ public class ClientsDAO {
         }
         return clients;
     }
-
-    public static List<ClientDTO> getClientsDTO(long id){
+//TODO:Check if correct after change of the relationship between tc and client
+    public static List<ClientDTO> getClientsDTO(long companyId) {
         List<ClientDTO> clients;
-        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            clients = session.createQuery("Select new org.example.DTO.ClientDTO(c.id, c.Name, c.finances) From Client c " +
-                            "join c.company tc " + "where tc.id = :id", ClientDTO.class)
-                    .setParameter("id", id)
+            clients = session.createQuery(
+                            "SELECT NEW org.example.DTO.ClientDTO(c.id, c.Name, c.finances) " +
+                                    "FROM Client c " +
+                                    "JOIN c.transportCompanies tc " +
+                                    "WHERE tc.id = :companyId", ClientDTO.class)
+                    .setParameter("companyId", companyId)
                     .getResultList();
             transaction.commit();
         }
         return clients;
     }
-
+    //TODO:Check if correct after change of the relationship between tc and client
     public static void deleteClient(Client client) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
-            // Remove the client from the associated TransportCompany
-            TransportCompany company = client.getCompany();
-            if (company != null) {
+            // Get the list of associated companies
+            List<TransportCompany> companies = client.getTransportCompanies();
+
+            // Remove the client from each associated company
+            for (TransportCompany company : companies) {
                 company.getClients().remove(client);
             }
+
+            // Clear the list of associated companies from the client
+            client.getTransportCompanies().clear();
 
             // Now delete the client
             session.delete(client);
@@ -79,7 +92,7 @@ public class ClientsDAO {
             transaction.commit();
         }
     }
-
+    //TODO:Check if correct after change of the relationship between tc and client
     public static void deleteClientById(long clientId) throws NoClientException {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
@@ -88,11 +101,16 @@ public class ClientsDAO {
             Client clientToDelete = session.get(Client.class, clientId);
 
             if (clientToDelete != null) {
-                // Remove the client from the associated TransportCompany
-                TransportCompany company = clientToDelete.getCompany();
-                if (company != null) {
+                // Get the associated companies
+                List<TransportCompany> companies = clientToDelete.getTransportCompanies();
+
+                // Remove the client from each associated company
+                for (TransportCompany company : companies) {
                     company.getClients().remove(clientToDelete);
                 }
+
+                // Clear the list of associated companies from the client (optional, depending on your requirements)
+                clientToDelete.getTransportCompanies().clear();
 
                 // Now delete the client
                 session.delete(clientToDelete);
@@ -117,45 +135,55 @@ public class ClientsDAO {
 
 
 
-
-    public static void PayObligation(int obligationId , Client client) throws NotEnoughFundsException{
-        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+    //TODO:Check if correct after change of the relationship between tc and client
+    public static void payObligation(int obligationId, Client client, TransportCompany tc) throws NotEnoughFundsException {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            TransportCompany tc = client.getCompany();
-           // List<Obligation> obligations = client.getObligations();
-            Obligation getObligation = session.get(Obligation.class, obligationId);
-            if (getObligation != null && getObligation.isDeleted() == false){
-               // client.getObligation(obligationId);
 
-                double amountToPay = getObligation.getAmount();
-                if (client.getFinances() >= amountToPay){
-                    tc.setIncome(tc.getIncome() + (long) amountToPay);//continue this logic
+            // Check if the provided transport company matches the client's associated company
+            if (!client.getTransportCompanies().contains(tc)) {
+                // The provided company does not match the client's associated company
+                throw new IllegalArgumentException("The provided company does not match the client's associated company.");
+            }
+
+            // Load the obligation
+            Obligation obligation = session.get(Obligation.class, obligationId);
+
+            if (obligation != null && !obligation.isDeleted()) {
+                double amountToPay = obligation.getAmount();
+
+                if (client.getFinances() >= amountToPay) {
+                    // Update the company's income
+                    tc.setIncome(tc.getIncome() + (long) amountToPay);
                     session.merge(tc);
-                    client.setFinances(client.getFinances() - amountToPay);
-                   // client.getObligations().remove(getObligation);
-                   // getObligation.setClient(null);
-                    getObligation.setDeleted(true);
-                    session.saveOrUpdate(getObligation);
 
+                    // Update the client's finances
+                    client.setFinances(client.getFinances() - amountToPay);
                     session.merge(client);
 
+                    // Mark the obligation as deleted
+                    obligation.setDeleted(true);
+                    session.saveOrUpdate(obligation);
+
                     transaction.commit();
-                }
-                else {
+                } else {
                     throw new NotEnoughFundsException(client.getId());
                 }
             }
-
-
         }
     }
-    public static void PayAllObligations(Client client)throws NotEnoughFundsException{
+    //TODO:Check if correct after change of the relationship between tc and client
+    public static void PayAllObligations(Client client, TransportCompany tc)throws NotEnoughFundsException{
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
-            List<Obligation> obligations = client.getObligations();
-            TransportCompany tc = client.getCompany();
-
+            //List<Obligation> obligations = client.getObligations();
+            //TransportCompany tc = client.getCompany();
+            List<Obligation> obligations = tc.getClients().stream()
+                    .filter(c -> c.equals(client))
+                    .findFirst()
+                    .map(Client::getObligations)
+                    .orElse(Collections.emptyList());
 
 
             if (obligations.size() == 0){
@@ -209,6 +237,23 @@ public class ClientsDAO {
         }
 
 
+    }
+    //TODO:Check if correct after change of the relationship between tc and client
+    public static void isThereObligationsThatAreNotPaidForASpecificCompany(Client client, TransportCompany tc) {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            List<Obligation> notPaidObligations = client.getObligations().stream()
+                    .filter(obligation -> tc.getClients().contains(client) && !obligation.isDeleted())
+                    .collect(Collectors.toList());
+
+            if (!notPaidObligations.isEmpty()) {
+                System.out.println("There are obligations that the client has not paid for in the specified company.");
+                // You might want to print or handle the list of not paid obligations here
+            } else {
+                System.out.println("All obligations are paid in the specified company.");
+            }
+        }
     }
 
 

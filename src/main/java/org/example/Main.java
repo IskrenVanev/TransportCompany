@@ -9,10 +9,7 @@ import org.example.Models.*;
 import org.example.Models.Enums.ContentType;
 import org.example.Models.Enums.VehicleType;
 import org.example.configuration.SessionFactoryUtil;
-import org.example.dao.ClientsDAO;
-import org.example.dao.DriverEmployeeDAO;
-import org.example.dao.TransportCompanyDAO;
-import org.example.dao.TransportVehicleDAO;
+import org.example.dao.*;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -24,7 +21,6 @@ import java.util.List;
 import static org.example.ExcelExporter.ExcelReader.readTransportationData;
 
 
-//TODO: Think about the TransportCompany's properities (the collections) and their DAOS
 
 //TODO: check when a driveremployee changes his company. He shouldn't be present in the old company that he worked for.
 // Maybe you can do that by using cascade = CascadeType.ALL
@@ -32,21 +28,32 @@ import static org.example.ExcelExporter.ExcelReader.readTransportationData;
 //TODO:think about the case in which the client wants to change his company but still has obligations to the previous company
 //TODO:what if the client is a client of a few companies think about that PayAllObligations
 
-//TODO: use DTO's instead of real models from the database in DAO
 
+//TODO: check for  affected methods after adding the relationship between DriverEmployee and TransportVehicleMission
 
 public class Main {
     public static void main(String[] args) {
        var session = SessionFactoryUtil.getSessionFactory().openSession();
 
-       var tc = TransportCompanyDAO.getCompanyById(1);
+       var tc = TransportCompanyDAO.getCompanyById(2);
+
+        var missions = TransportVehicleMissionDAO.getAllTransportVehicleMissions();
+        for(TransportVehicleMission tvm : missions){
+            System.out.println(tvm);
+        }
+        var sumPriceMissions = TransportVehicleMissionDAO.getSumOfPricesForMissions();
+        System.out.println(sumPriceMissions);
 
 
-
-
-
-
-
+        DriverEmployeeDAO.getDriverEmployees().forEach(System.out::println);
+        DriverEmployeeDAO.getDriverMissions(1).forEach(System.out::println);
+         var tv = TransportVehicleDAO.getTransportVehicleById(10);
+ var driver =DriverEmployeeDAO.getDriverById(1);
+       //var calculateEarnings = TransportCompanyDAO.calculateEarningsForPeriodOfTime(driver, LocalDate.of(2023, 11, 12), LocalDate.of(2023 ,12, 17));
+       // System.out.println(calculateEarnings);
+        var drivers = tc.getDriverEmployees();
+   var calculateEarningsForAllDriverEmployees =  TransportCompanyDAO.calculateTotalEarningsForPeriodOfTime(drivers, LocalDate.of(2023, 11, 12), LocalDate.of(2023 ,12, 17));
+        System.out.println(calculateEarningsForAllDriverEmployees);
     }
 
 }

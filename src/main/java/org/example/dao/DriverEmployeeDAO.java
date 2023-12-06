@@ -8,11 +8,13 @@ import org.example.DTO.DriverEmployeeDTO;
 import org.example.Models.DriverEmployee;
 import org.example.Models.Qualification;
 import org.example.Models.TransportCompany;
+import org.example.Models.TransportVehicleMission;
 import org.example.configuration.SessionFactoryUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -61,6 +63,18 @@ public class DriverEmployeeDAO {
         }
         return driverEmployees;
     }
+    public static List<TransportVehicleMission> getDriverMissions(long id) {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            DriverEmployee driver = session.get(DriverEmployee.class, id);
+            if (driver != null) {
+                return driver.getMissions();
+            }
+            transaction.commit();
+        }
+        return null;
+    }
+
 
     public static void deleteDriverEmployee(DriverEmployee driverEmployee) throws  NoDriverEmployeeFoundException{
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
@@ -117,7 +131,11 @@ public class DriverEmployeeDAO {
 
 
 
-    }
+
+
+
+
+}
 
 
 

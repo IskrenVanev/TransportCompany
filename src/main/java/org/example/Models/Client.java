@@ -19,8 +19,9 @@ public class Client {
     private List<Obligation> obligations;
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private TransportCompany company;
+    @ManyToMany(mappedBy = "clients")
+    private List<TransportCompany> transportCompanies;
+
 
 
     private double finances;
@@ -33,13 +34,23 @@ public class Client {
         obligations.add(obligation);
         obligation.setClient(this);
     }
+    public Client(String name,  double finances) {
+        this.finances = finances;
+        this.Name = name;
+        this.obligations = new ArrayList<>();
+        this.transportCompanies = new ArrayList<>();
 
+      //  this.transportCompanies.add(company);
+    }
 
     public Client(String name, TransportCompany company, double finances) {
         this.finances = finances;
-        this.obligations = new ArrayList<>();
         this.Name = name;
-        this.company = company;
+
+        this.obligations = new ArrayList<>();
+        this.transportCompanies = new ArrayList<>();
+
+        this.transportCompanies.add(company);
     }
 
     public List<Obligation> getObligations() {
@@ -79,8 +90,12 @@ public class Client {
                 '}';
     }
 
-    public TransportCompany getCompany() {
-        return company;
+    //public TransportCompany getCompany() {
+ //       return company;
+  //  }
+
+    public List<TransportCompany> getTransportCompanies() {
+        return transportCompanies;
     }
 
     public long getId() {

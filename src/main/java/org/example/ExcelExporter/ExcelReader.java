@@ -6,6 +6,7 @@ import org.example.Models.Enums.ContentType;
 import org.example.Models.Enums.VehicleType;
 import org.example.Models.TransportVehicle;
 import org.example.Models.TransportVehicleMission;
+import org.example.dao.DriverEmployeeDAO;
 import org.example.dao.TransportVehicleDAO;
 
 import java.io.FileInputStream;
@@ -70,6 +71,10 @@ public class ExcelReader {
         } else {
             // Handle the case when the cell is null or not numeric
             mission.setWeight(null); // or any default value you prefer
+        }
+        if (row.getCell(10) != null && row.getCell(10).getCellType() == CellType.NUMERIC){
+            long driverId = (long) row.getCell(10).getNumericCellValue();
+            mission.setDriver(DriverEmployeeDAO.getDriverById(driverId));
         }
 
         // Add more fields as needed

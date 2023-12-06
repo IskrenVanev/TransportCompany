@@ -20,7 +20,12 @@ public class TransportCompany {
   //  @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
   //  private List<TransportVehicleMission> missions = new ArrayList<>();
 
-    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
+    @ManyToMany
+    @JoinTable(
+            name = "ClientTransportCompany",
+            joinColumns = @JoinColumn(name = "company_id"),
+            inverseJoinColumns = @JoinColumn(name = "client_id")
+    )
     private List<Client> clients = new ArrayList<>();
 
 

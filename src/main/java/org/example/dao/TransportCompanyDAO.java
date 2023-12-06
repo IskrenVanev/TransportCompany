@@ -92,6 +92,9 @@ public class TransportCompanyDAO {
             transaction.commit();
         }
     }
+
+
+    //TODO:Check if correct after change of the relationship between tc and client
     public static void addObligation(Obligation obligation , Client client) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
@@ -112,21 +115,23 @@ public class TransportCompanyDAO {
     }
 
 //Both the client and the company can che ck if the client has more obligations
-    public static void IsThereObligationsThatAreNotPaid(Client client){
-        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
-            List<Obligation> NotPaidObligations =   client.getObligations();
-            if (NotPaidObligations != null && !NotPaidObligations.stream().allMatch(Obligation::isDeleted)){
-                System.out.println("There are more obligations that the client has to pay for");
-            }
-            else {
-                System.out.println("All obligations are paid");
-            }
+//TODO:Check if correct after change of the relationship between tc and client
+public static void isThereObligationsThatAreNotPaid(Client client, TransportCompany tc) {
+    try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+        Transaction transaction = session.beginTransaction();
 
+        List<Obligation> notPaidObligations = client.getObligations().stream()
+                .filter(obligation -> tc.getClients().contains(client) && !obligation.isDeleted())
+                .collect(Collectors.toList());
+
+        if (!notPaidObligations.isEmpty()) {
+            System.out.println("There are obligations that the client has not paid for in the specified company.");
+            // You might want to print or handle the list of not paid obligations here
+        } else {
+            System.out.println("All obligations are paid in the specified company.");
         }
-
-
     }
+}
     public static void SortCompaniesByName() {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
@@ -252,6 +257,48 @@ public class TransportCompanyDAO {
             transaction.commit();
         }
     }
+    public static double calculateTotalEarningsForPeriodOfTime(Set<DriverEmployee> drivers, LocalDate startDate, LocalDate endDate) {
+        double totalEarnings = 0.0;
+
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            for (DriverEmployee driver : drivers) {
+                double driverEarnings = calculateEarningsForPeriodOfTime(driver, startDate, endDate);
+                totalEarnings += driverEarnings;
+            }
+
+            transaction.commit();
+        }
+
+        return totalEarnings;
+    }
+
+    public static double calculateEarningsForPeriodOfTime(DriverEmployee driver, LocalDate startDate, LocalDate endDate) {
+        double totalEarnings = 0.0;
+        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+        List<TransportVehicleMission> driverMissions = driver.getMissions();
+
+        for (TransportVehicleMission mission : driverMissions) {
+            LocalDate missionDate = mission.getDateOfDeparture(); // Assuming the mission date is relevant
+
+            // Check if the mission date is within the specified range
+            if (missionDate.isAfter(startDate.minusDays(1)) && missionDate.isBefore(endDate.plusDays(1))) {
+                totalEarnings += mission.getPriceForMission();
+            }
+        }
+        transaction.commit();
+        }
+
+        return totalEarnings;
+    }
+
+//    public static double calculateSalar(DriverEmployee driver, LocalDate startDate, LocalDate endDate)
+//    {
+//
+//    }
+
 }
 
 

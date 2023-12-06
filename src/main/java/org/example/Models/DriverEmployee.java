@@ -2,9 +2,7 @@ package org.example.Models;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "DriverEmployee")
@@ -21,7 +19,8 @@ public class DriverEmployee {
     private double salary;
     @OneToMany(mappedBy = "driver", fetch = FetchType.EAGER)
     private Set<Qualification> qualifications = new HashSet<>();
-
+    @OneToMany(mappedBy = "driver", fetch = FetchType.EAGER)
+    private List<TransportVehicleMission> missions= new ArrayList<>();
     public long getId() {
         return id;
     }
@@ -62,6 +61,10 @@ public class DriverEmployee {
 
     public String getName() {
         return name;
+    }
+
+    public List<TransportVehicleMission> getMissions() {
+        return missions;
     }
 
     public TransportCompany getCompany() {
