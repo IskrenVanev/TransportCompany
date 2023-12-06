@@ -25,38 +25,44 @@ import static org.example.ExcelExporter.ExcelReader.readTransportationData;
 //TODO: check when a driveremployee changes his company. He shouldn't be present in the old company that he worked for.
 // Maybe you can do that by using cascade = CascadeType.ALL
 
-//TODO:think about the case in which the client wants to change his company but still has obligations to the previous company
-//TODO:what if the client is a client of a few companies think about that PayAllObligations
+//TODO:think about the case in which the client wants to stop being a client to a certain company
 
-
-//TODO: check for  affected methods after adding the relationship between DriverEmployee and TransportVehicleMission
 
 public class Main {
     public static void main(String[] args) {
        var session = SessionFactoryUtil.getSessionFactory().openSession();
+        var tc = TransportCompanyDAO.getCompanyById(1);
+      //  Client client = new Client("sssasdsas", 22222);
+        var client = ClientsDAO.getClientById(1);
+      ClientsDAO.addTransportCompany(tc,client);
+       //ClientsDAO.createClient(client);
 
-       var tc = TransportCompanyDAO.getCompanyById(2);
-
-        var missions = TransportVehicleMissionDAO.getAllTransportVehicleMissions();
-        for(TransportVehicleMission tvm : missions){
-            System.out.println(tvm);
-        }
-        var sumPriceMissions = TransportVehicleMissionDAO.getSumOfPricesForMissions();
-        System.out.println(sumPriceMissions);
-
-
-        DriverEmployeeDAO.getDriverEmployees().forEach(System.out::println);
-        DriverEmployeeDAO.getDriverMissions(1).forEach(System.out::println);
-         var tv = TransportVehicleDAO.getTransportVehicleById(10);
- var driver =DriverEmployeeDAO.getDriverById(1);
-       //var calculateEarnings = TransportCompanyDAO.calculateEarningsForPeriodOfTime(driver, LocalDate.of(2023, 11, 12), LocalDate.of(2023 ,12, 17));
-       // System.out.println(calculateEarnings);
-        var drivers = tc.getDriverEmployees();
-   var calculateEarningsForAllDriverEmployees =  TransportCompanyDAO.calculateTotalEarningsForPeriodOfTime(drivers, LocalDate.of(2023, 11, 12), LocalDate.of(2023 ,12, 17));
-        System.out.println(calculateEarningsForAllDriverEmployees);
-    }
+  }
 
 }
+
+//       var tc = TransportCompanyDAO.getCompanyById(2);
+//
+//        var missions = TransportVehicleMissionDAO.getAllTransportVehicleMissions();
+//        for(TransportVehicleMission tvm : missions){
+//            System.out.println(tvm);
+//        }
+//        var sumPriceMissions = TransportVehicleMissionDAO.getSumOfPricesForMissions();
+//        System.out.println(sumPriceMissions);
+//
+//
+//        DriverEmployeeDAO.getDriverEmployees().forEach(System.out::println);
+//        DriverEmployeeDAO.getDriverMissions(1).forEach(System.out::println);
+//         var tv = TransportVehicleDAO.getTransportVehicleById(10);
+// var driver =DriverEmployeeDAO.getDriverById(1);
+//       //var calculateEarnings = TransportCompanyDAO.calculateEarningsForPeriodOfTime(driver, LocalDate.of(2023, 11, 12), LocalDate.of(2023 ,12, 17));
+//       // System.out.println(calculateEarnings);
+//        var drivers = tc.getDriverEmployees();
+//   var calculateEarningsForAllDriverEmployees =  TransportCompanyDAO.calculateTotalEarningsForPeriodOfTime(drivers, LocalDate.of(2023, 11, 12), LocalDate.of(2023 ,12, 17));
+//        System.out.println(calculateEarningsForAllDriverEmployees);
+
+
+
 
 
 //       // var tv = TransportVehicleDAO.getTransportVehicleById(10);

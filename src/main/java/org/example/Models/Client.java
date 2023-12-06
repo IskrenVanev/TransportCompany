@@ -1,6 +1,8 @@
 package org.example.Models;
 
 import jakarta.persistence.*;
+import org.example.configuration.SessionFactoryUtil;
+import org.hibernate.Session;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,12 @@ public class Client {
     private List<Obligation> obligations;
 
 
-    @ManyToMany(mappedBy = "clients")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "ClientTransportCompany",
+            joinColumns = @JoinColumn(name = "client_id"),
+            inverseJoinColumns = @JoinColumn(name = "company_id")
+    )
     private List<TransportCompany> transportCompanies;
 
 
@@ -43,15 +50,7 @@ public class Client {
       //  this.transportCompanies.add(company);
     }
 
-    public Client(String name, TransportCompany company, double finances) {
-        this.finances = finances;
-        this.Name = name;
 
-        this.obligations = new ArrayList<>();
-        this.transportCompanies = new ArrayList<>();
-
-        this.transportCompanies.add(company);
-    }
 
     public List<Obligation> getObligations() {
         return obligations;

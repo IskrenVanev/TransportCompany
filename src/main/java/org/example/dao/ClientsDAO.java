@@ -8,6 +8,7 @@ import org.example.Models.Obligation;
 import org.example.Models.TransportCompany;
 import org.example.configuration.SessionFactoryUtil;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import java.util.Collections;
@@ -15,6 +16,27 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ClientsDAO {
+    private final SessionFactory sessionFactory;
+    public ClientsDAO(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+
+
+    public static void addTransportCompany(TransportCompany company, Client client) {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            // Add the company to the client's transportCompanies list
+            client.getTransportCompanies().add(company);
+
+            // Save or update the client, which will cascade to the junction table
+            session.saveOrUpdate(client);
+
+            // Commit the transaction
+            transaction.commit();
+        }
+    }
     //TODO:Check if correct after change of the relationship between tc and client
     public static void createClient(Client client) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
