@@ -25,7 +25,8 @@ public class TransportVehicleMission {
 
     public TransportVehicleMission(String departureStartingPoint,
                                    String departureArrivalPoint, LocalDate dateOfDeparture,
-                                   LocalDate dateOfArrival, double priceForMission, TransportVehicle vehicle, ContentType content, DriverEmployee driver)
+                                   LocalDate dateOfArrival, double priceForMission,
+                                   TransportVehicle vehicle, ContentType content, double weight, DriverEmployee driver)
     {
         this.departureStartingPoint = departureStartingPoint;
         this.departureArrivalPoint = departureArrivalPoint;

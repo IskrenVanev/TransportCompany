@@ -12,10 +12,7 @@ import org.hibernate.query.Query;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TransportCompanyDAO {
@@ -48,15 +45,13 @@ public class TransportCompanyDAO {
         }
         return companies;
     }
-    public static List<TransportCompanyDTO> getCompaniesDTO(long id) {
+    public static List<TransportCompanyDTO> getCompaniesDTO() {
         List<TransportCompanyDTO> transportCompanyDTOS;
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             transportCompanyDTOS = session.createQuery(
                             "Select new org.example.DTO.TransportCompanyDTO(tc.id, tc.name) " +
-                                    "From TransportCompany tc " + // Add a space here
-                                    "where tc.id = :id", TransportCompanyDTO.class)
-                    .setParameter("id", id)
+                                    "From TransportCompany tc " , TransportCompanyDTO.class)
                     .getResultList();
             transaction.commit();
         }
@@ -120,9 +115,17 @@ public static void isThereObligationsThatAreNotPaid(Client client, TransportComp
     try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
         Transaction transaction = session.beginTransaction();
 
-        List<Obligation> notPaidObligations = client.getObligations().stream()
-                .filter(obligation -> tc.getClients().contains(client) && !obligation.isDeleted())
-                .collect(Collectors.toList());
+//        List<Obligation> notPaidObligations = client.getObligations().stream()
+//                .filter(obligation -> tc.getClients().contains(client) && !obligation.isDeleted())
+//                .collect(Collectors.toList());
+        List<Obligation> obligations = client.getObligations();
+        List<Obligation> notPaidObligations = new ArrayList<>();
+        for(Obligation obligation : obligations){
+            if(!obligation.isDeleted()){
+                notPaidObligations.add(obligation);
+            }
+        }
+
 
         if (!notPaidObligations.isEmpty()) {
             System.out.println("There are obligations that the client has not paid for in the specified company.");

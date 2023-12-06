@@ -41,6 +41,9 @@ public class Client {
         obligations.add(obligation);
         obligation.setClient(this);
     }
+
+
+
     public Client(String name,  double finances) {
         this.finances = finances;
         this.Name = name;
@@ -89,7 +92,10 @@ public class Client {
                 '}';
     }
 
-    //public TransportCompany getCompany() {
+    public void setId(long id) {
+        this.id = id;
+    }
+//public TransportCompany getCompany() {
  //       return company;
   //  }
 

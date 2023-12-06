@@ -11,6 +11,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -97,18 +98,8 @@ public class ClientsDAO {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
-            // Get the list of associated companies
-            List<TransportCompany> companies = client.getTransportCompanies();
-
-            // Remove the client from each associated company
-            for (TransportCompany company : companies) {
-                company.getClients().remove(client);
-            }
-
-            // Clear the list of associated companies from the client
             client.getTransportCompanies().clear();
 
-            // Now delete the client
             session.delete(client);
 
             transaction.commit();
@@ -201,13 +192,13 @@ public class ClientsDAO {
 
             //List<Obligation> obligations = client.getObligations();
             //TransportCompany tc = client.getCompany();
-            List<Obligation> obligations = tc.getClients().stream()
-                    .filter(c -> c.equals(client))
-                    .findFirst()
-                    .map(Client::getObligations)
-                    .orElse(Collections.emptyList());
+//            List<Obligation> obligations = tc.getClients().stream()
+//                    .filter(c -> c.equals(client))
+//                    .findFirst()
+//                    .map(Client::getObligations)
+//                    .orElse(Collections.emptyList());
 
-
+            List<Obligation> obligations = client.getObligations();
             if (obligations.size() == 0){
                 System.out.println("All obligations are paid");
                 return;
@@ -265,10 +256,17 @@ public class ClientsDAO {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
-            List<Obligation> notPaidObligations = client.getObligations().stream()
-                    .filter(obligation -> tc.getClients().contains(client) && !obligation.isDeleted())
-                    .collect(Collectors.toList());
+//            List<Obligation> notPaidObligations = client.getObligations().stream()
+//                    .filter(obligation -> tc.getClients().contains(client) && !obligation.isDeleted())
+//                    .collect(Collectors.toList());
+            List<Obligation> obligations = client.getObligations();
+            List<Obligation> notPaidObligations = new ArrayList<>();
 
+            for (Obligation obligation : obligations){
+                if (!obligation.isDeleted()){
+                    notPaidObligations.add(obligation);
+                }
+            }
             if (!notPaidObligations.isEmpty()) {
                 System.out.println("There are obligations that the client has not paid for in the specified company.");
                 // You might want to print or handle the list of not paid obligations here

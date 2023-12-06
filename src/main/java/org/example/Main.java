@@ -32,14 +32,52 @@ public class Main {
     public static void main(String[] args) {
        var session = SessionFactoryUtil.getSessionFactory().openSession();
         var tc = TransportCompanyDAO.getCompanyById(1);
-      //  Client client = new Client("sssasdsas", 22222);
-        var client = ClientsDAO.getClientById(1);
-      ClientsDAO.addTransportCompany(tc,client);
-       //ClientsDAO.createClient(client);
 
+
+
+     var driver =   DriverEmployeeDAO.getDriverById(1);
+        var tv = TransportVehicleDAO.getTransportVehicleById(1);
+
+
+
+
+       // TransportVehicle transportVehicle = new TransportVehicle(VehicleType.BUS, tc, new ArrayList<TransportVehicleMission>());
+
+       // TransportVehicleDAO.createTransportVehicle(transportVehicle, session);
+        //TransportVehicleMission tvm,  TransportVehicle tv
   }
 
 }
+
+
+
+
+//        TransportVehicleMission tvm = new TransportVehicleMission(
+//                "New York",
+//                "Las Vegas",
+//                LocalDate.of(2023, 12, 1),  // Date of Departure: December 1, 2023
+//                LocalDate.of(2023, 12, 10), // Date of Arrival: December 10, 2023
+//                1500.0,                      // Price for Mission
+//                tv,     // Assuming you have a default constructor for TransportVehicle
+//                ContentType.STOCK,       // Assuming you have a default constructor for TransportContent
+//                1000.0,
+//                driver
+//
+//        );
+//
+//       TransportCompanyDAO.addMission(tvm, tv);
+
+//        var client = ClientsDAO.getClientById(6);
+//        var obligation = new Obligation(client, 300.0);
+//        TransportCompanyDAO.addObligation(obligation, client);
+
+
+
+//  Client client = new Client("sssasdsas", 22222);
+//   var client = ClientsDAO.getClientById(1);
+// ClientsDAO.addTransportCompany(tc,client);
+//ClientsDAO.createClient(client);
+
 
 //       var tc = TransportCompanyDAO.getCompanyById(2);
 //
