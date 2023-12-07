@@ -16,7 +16,19 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class TransportCompanyDAO {
+    /**
+     * Creates a new transport company in the system.
+     *
+     * @param company The transport company to be created.
+     * @throws IllegalArgumentException If the provided transport company is null.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static void createCompany(TransportCompany company) {
+        if (company == null) {
+            throw new IllegalArgumentException("Transport company cannot be null.");
+        }
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             session.save(company);
@@ -24,8 +36,21 @@ public class TransportCompanyDAO {
         }
     }
 
-
+    /**
+     * Retrieves a transport company from the system by its ID.
+     *
+     * @param id The ID of the transport company to be retrieved.
+     * @return The transport company with the specified ID.
+     *         Returns null if no transport company with the given ID is found.
+     * @throws IllegalArgumentException If the provided ID is negative or null.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static TransportCompany getCompanyById(long id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("ID cannot be negative or null.");
+        }
         TransportCompany company;
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
@@ -34,7 +59,15 @@ public class TransportCompanyDAO {
         }
         return company;
     }
-
+    /**
+     * Retrieves a list of all transport companies in the system.
+     *
+     * @return A list of transport companies.
+     *         Returns an empty list if no companies are found.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static List<TransportCompany> getCompanies() {
         List<TransportCompany> companies;
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
@@ -45,6 +78,15 @@ public class TransportCompanyDAO {
         }
         return companies;
     }
+    /**
+     * Retrieves a list of transport company DTOs containing specific information.
+     *
+     * @return A list of transport company DTOs containing ID and name.
+     *         Returns an empty list if no companies are found.
+     * @throws  org.hibernate.HibernateException  If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static List<TransportCompanyDTO> getCompaniesDTO() {
         List<TransportCompanyDTO> transportCompanyDTOS;
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
@@ -58,24 +100,59 @@ public class TransportCompanyDAO {
         return transportCompanyDTOS;
     }
 
-
+    /**
+     * Updates an existing transport company in the system.
+     *
+     * @param company The transport company to be updated.
+     * @throws IllegalArgumentException If the provided transport company is null.
+     * @throws org.hibernate.HibernateException  If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
 
     public static void updateCompany(TransportCompany company) {
+        if (company == null) {
+            throw new IllegalArgumentException("Transport company cannot be null.");
+        }
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             session.saveOrUpdate(company);
             transaction.commit();
         }
     }
-
+    /**
+     * Deletes an existing transport company from the system.
+     *
+     * @param company The transport company to be deleted.
+     * @throws IllegalArgumentException If the provided transport company is null.
+     * @throws org.hibernate.HibernateException  If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static void deleteCompany(TransportCompany company) {
+        if (company == null) {
+            throw new IllegalArgumentException("Transport company cannot be null.");
+        }
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             session.delete(company);
             transaction.commit();
         }
     }
+    /**
+     * Deletes an existing transport company from the system based on its ID.
+     *
+     * @param companyId The ID of the transport company to be deleted.
+     * @throws IllegalArgumentException If the provided company ID is negative or null.
+     * @throws NoCompanyException If no transport company with the given ID is found.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static void deleteCompanyById(long companyId) throws NoCompanyException{
+        if (companyId <= 0) {
+            throw new IllegalArgumentException("Company ID cannot be negative or null.");
+        }
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             TransportCompany companyToDelete = session.get(TransportCompany.class, companyId);
@@ -89,8 +166,23 @@ public class TransportCompanyDAO {
     }
 
 
-    //TODO:Check if correct after change of the relationship between tc and client
+    /**
+     * Adds an obligation to a client in the system.
+     *
+     * @param obligation The obligation to be added.
+     * @param client The client to whom the obligation is added.
+     * @throws IllegalArgumentException If either the obligation or the client is null.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static void addObligation(Obligation obligation , Client client) {
+        if (obligation == null) {
+            throw new IllegalArgumentException("Obligation cannot be null.");
+        }
+        if (client == null) {
+            throw new IllegalArgumentException("Client cannot be null.");
+        }
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
@@ -111,7 +203,24 @@ public class TransportCompanyDAO {
 
 //Both the client and the company can che ck if the client has more obligations
 //TODO:Check if correct after change of the relationship between tc and client
+    /**
+     * Checks if there are obligations that a client has not paid for in a specified transport company.
+     *
+     * @param client The client for whom to check unpaid obligations.
+     * @param tc The transport company in which to check for unpaid obligations.
+     * @throws IllegalArgumentException If either the client or the transport company is null.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
+
 public static void isThereObligationsThatAreNotPaid(Client client, TransportCompany tc) {
+    if (client == null) {
+        throw new IllegalArgumentException("Client cannot be null.");
+    }
+    if (tc == null) {
+        throw new IllegalArgumentException("Transport company cannot be null.");
+    }
     try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
         Transaction transaction = session.beginTransaction();
 
@@ -121,7 +230,7 @@ public static void isThereObligationsThatAreNotPaid(Client client, TransportComp
         List<Obligation> obligations = client.getObligations();
         List<Obligation> notPaidObligations = new ArrayList<>();
         for(Obligation obligation : obligations){
-            if(!obligation.isDeleted()){
+            if(!obligation.isDeleted() && containsTransportCompany(obligation.getClient(), tc)){
                 notPaidObligations.add(obligation);
             }
         }
@@ -135,6 +244,22 @@ public static void isThereObligationsThatAreNotPaid(Client client, TransportComp
         }
     }
 }
+//helper method for the isThereObligationsThatAreNotPaid method
+    private static boolean containsTransportCompany(Client client, TransportCompany tc) {
+        // Check if the client's transport companies contain the specified transport company
+        return client.getTransportCompanies().stream().anyMatch(company -> company.equals(tc));
+    }
+
+
+
+
+    /**
+     * Sorts and retrieves a list of transport companies ordered by their names.
+     *
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static void SortCompaniesByName() {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
@@ -153,6 +278,13 @@ public static void isThereObligationsThatAreNotPaid(Client client, TransportComp
             transaction.commit();
         }
     }
+    /**
+     * Sorts and retrieves a list of transport companies ordered by their income in descending order.
+     *
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static void SortCompaniesByIncome() { //DESCENDING
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
@@ -173,7 +305,20 @@ public static void isThereObligationsThatAreNotPaid(Client client, TransportComp
     }
 
 //Test these
+    /**
+     * Sorts and prints the driver employees of a transport company based on the number of qualifications they have.
+     * Prints each driver's name and qualifications.
+     *
+     * @param tc The transport company for which to sort and print driver employees.
+     * @throws IllegalArgumentException If there are no drivers in the company or if the company is null.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static void sortByQualification(TransportCompany tc){
+        if (tc == null) {
+            throw new IllegalArgumentException("TransportCompany cannot be null.");
+        }
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
@@ -210,6 +355,16 @@ public static void isThereObligationsThatAreNotPaid(Client client, TransportComp
             transaction.commit();
         }
     }
+    /**
+     * Sorts and prints the driver employees of a transport company based on their salaries in descending order.
+     * Prints each driver's ID and salary.
+     *
+     * @param tc The transport company for which to sort and print driver employees.
+     * @throws IllegalArgumentException If the transport company is null.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static void sortBySalary(TransportCompany tc){
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
@@ -230,10 +385,27 @@ public static void isThereObligationsThatAreNotPaid(Client client, TransportComp
     }
 
 //test this
+
+    /**
+     * Adds a transport vehicle mission to a transport vehicle.
+     *
+     * @param tvm The transport vehicle mission to be added.
+     * @param tv The transport vehicle to which the mission will be added.
+     * @throws IllegalArgumentException If the transport vehicle mission or the transport vehicle is null.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static void addMission(TransportVehicleMission tvm,  TransportVehicle tv){
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            if (tvm == null || tv == null)throw new IllegalArgumentException("parameters cannot be null.");
+            if (tvm == null) {
+                throw new IllegalArgumentException("Transport vehicle mission cannot be null.");
+            }
+
+            if (tv == null) {
+                throw new IllegalArgumentException("Transport vehicle cannot be null.");
+            }
             tvm.setVehicle(tv);
             tv.getMissions().add(tvm);
             //tc.getVehicles().add(tv);
@@ -246,7 +418,21 @@ public static void isThereObligationsThatAreNotPaid(Client client, TransportComp
             transaction.commit();
         }
     }
+    /**
+     * Sorts and prints the transport vehicle missions of a transport company based on the absolute difference
+     * in days between the date of arrival and the date of departure. The missions are sorted in descending order.
+     *
+     * @param tc The transport company for which to sort and print transport vehicle missions.
+     * @throws NoTransportVehicleFoundException If no transport vehicles are found for the specified transport company.
+     * @throws IllegalArgumentException If the transport company is null.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static void sortMissionsByDistance(TransportCompany tc) throws NoTransportVehicleFoundException {
+        if (tc == null) {
+            throw new IllegalArgumentException("TransportCompany cannot be null.");
+        }
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             LocalDate currentDate = LocalDate.now();
@@ -273,7 +459,28 @@ public static void isThereObligationsThatAreNotPaid(Client client, TransportComp
             transaction.commit();
         }
     }
+    /**
+     * Calculates the total earnings for a set of driver employees within a specified period of time.
+     *
+     * @param drivers    The set of driver employees for which to calculate total earnings.
+     * @param startDate  The start date of the period for which earnings are calculated.
+     * @param endDate    The end date of the period for which earnings are calculated.
+     * @return The total earnings for the specified set of driver employees within the given period.
+     * @throws IllegalArgumentException If the set of drivers, the start date or the end date is null.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static double calculateTotalEarningsForPeriodOfTime(Set<DriverEmployee> drivers, LocalDate startDate, LocalDate endDate) {
+        if (drivers == null) {
+            throw new IllegalArgumentException("Set of drivers cannot be null.");
+        }
+        if (startDate == null) {
+            throw new IllegalArgumentException("Start date cannot be null.");
+        }
+        if (endDate == null) {
+            throw new IllegalArgumentException("End date cannot be null.");
+        }
         double totalEarnings = 0.0;
 
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
@@ -289,8 +496,28 @@ public static void isThereObligationsThatAreNotPaid(Client client, TransportComp
 
         return totalEarnings;
     }
-
+    /**
+     * Calculates the earnings for a specific driver employee within a specified period of time based on their missions.
+     *
+     * @param driver     The driver employee for whom to calculate earnings.
+     * @param startDate  The start date of the period for which earnings are calculated.
+     * @param endDate    The end date of the period for which earnings are calculated.
+     * @return The total earnings for the specified driver employee within the given period.
+     * @throws IllegalArgumentException If the driver, the start date or the end date is null.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static double calculateEarningsForPeriodOfTime(DriverEmployee driver, LocalDate startDate, LocalDate endDate) {
+        if (driver == null) {
+            throw new IllegalArgumentException("Driver cannot be null.");
+        }
+        if (startDate == null) {
+            throw new IllegalArgumentException("Start date cannot be null.");
+        }
+        if (endDate == null) {
+            throw new IllegalArgumentException("End date cannot be null.");
+        }
         double totalEarnings = 0.0;
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();

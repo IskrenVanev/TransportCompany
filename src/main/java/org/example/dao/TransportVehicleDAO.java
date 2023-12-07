@@ -17,7 +17,23 @@ import org.hibernate.Transaction;
 import java.util.List;
 
 public class TransportVehicleDAO {
+    /**
+     * Creates a new transport vehicle and associates it with a specified transport company within the given Hibernate session.
+     *
+     * @param transportVehicle The transport vehicle to be created and saved.
+     * @param session          The Hibernate session in which the operation is performed.
+     * @throws IllegalArgumentException If the transportVehicle or session are null.
+     * @throws org.hibernate.HibernateException       If there is an issue with the Hibernate operations.
+     *                                  Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static void createTransportVehicle(TransportVehicle transportVehicle ,Session session) {
+        if (transportVehicle == null) {
+            throw new IllegalArgumentException("The transport vehicle shouldn't be null");
+        }
+        if (session == null) {
+            throw new IllegalArgumentException("The session shouldn't be null");
+        }
         //try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
@@ -31,7 +47,20 @@ public class TransportVehicleDAO {
             transaction.commit();
         //}
     }
+    /**
+     * Retrieves a transport vehicle by its unique identifier (ID) within the specified Hibernate session.
+     *
+     * @param id The unique identifier of the transport vehicle to be retrieved.
+     * @return The transport vehicle with the specified ID, or null if not found.
+     * @throws IllegalArgumentException If the provided ID is less than or equal to 0.
+     * @throws org.hibernate.HibernateException     If there is an issue with the Hibernate operations.
+     *                                  Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static TransportVehicle getTransportVehicleById(long id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("The id should be greater than 0");
+        }
         TransportVehicle transportVehicle;
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
@@ -60,6 +89,14 @@ public class TransportVehicleDAO {
    //     }
    //     return transportVehicle;
    // }
+    /**
+     * Retrieves a list of all transport vehicles within the specified Hibernate session.
+     *
+     * @return A list of transport vehicles, or an empty list if none are found.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                            Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static List<TransportVehicle> getTransportVehicles() {
         List<TransportVehicle> transportVehicles;
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
@@ -70,8 +107,20 @@ public class TransportVehicleDAO {
         }
         return transportVehicles;
     }
-
+    /**
+     * Retrieves a list of transport vehicle data transfer objects (DTOs) associated with a specific transport company.
+     *
+     * @param id The ID of the transport company for which DTOs are retrieved.
+     * @return A list of transport vehicle DTOs, or an empty list if none are found.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     * @throws IllegalArgumentException If the provided ID is less than or equal to 0.
+     *                            Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static List<TransportVehicleDTO> getTransportVehiclesDTO(long id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("The id should be greater than 0");
+        }
         List<TransportVehicleDTO> transportVehicles;
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
@@ -88,8 +137,19 @@ public class TransportVehicleDAO {
 
 
 
-
+    /**
+     * Updates the information of a transport vehicle in the database.
+     *
+     * @param vehicle The transport vehicle entity with updated information.
+     * @throws IllegalArgumentException If the transportVehicle is null.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                            Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static void updateVehicle(TransportVehicle vehicle) {
+        if (vehicle == null) {
+            throw new IllegalArgumentException("The transport vehicle shouldn't be null");
+        }
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             session.saveOrUpdate(vehicle);
@@ -99,8 +159,23 @@ public class TransportVehicleDAO {
 
 
 
-
+    /**
+     * Deletes a transport vehicle from the database and removes it from the associated transport company.
+     *
+     * @param transportVehicle The transport vehicle entity to be deleted.
+     * @param session          The Hibernate session to use for database operations.
+     * @throws IllegalArgumentException If the transportVehicle or session are null.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                            Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static void deleteTransportVehicle(TransportVehicle transportVehicle, Session session) {
+        if (transportVehicle == null) {
+            throw new IllegalArgumentException("The transport vehicle shouldn't be null");
+        }
+        if (session == null) {
+            throw new IllegalArgumentException("The session shouldn't be null");
+        }
      //   try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
@@ -116,8 +191,20 @@ public class TransportVehicleDAO {
             transaction.commit();
         }
  //   }
-
+    /**
+     * Deletes a transport vehicle from the database by its ID and removes it from the associated transport company.
+     *
+     * @param transportVehicleId The ID of the transport vehicle to be deleted.
+     * @throws NoTransportVehicleFoundException If no transport vehicle with the given ID is found.
+     * @throws IllegalArgumentException If the provided ID is less than or equal to 0.
+     * @throws org.hibernate.HibernateException               If there is an issue with the Hibernate operations.
+     *                                          Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static void deleteTransportVehicleById(long transportVehicleId) throws NoTransportVehicleFoundException{
+        if (transportVehicleId <= 0) {
+            throw new IllegalArgumentException("The id should be greater than 0");
+        }
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 

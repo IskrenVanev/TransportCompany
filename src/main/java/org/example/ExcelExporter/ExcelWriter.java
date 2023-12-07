@@ -21,8 +21,23 @@ import java.util.List;
 
 
 public class ExcelWriter {
+    /**
+     * Writes a list of TransportVehicleMission objects to an Excel file.
+     *
+     * @param missionData The list of TransportVehicleMission objects to be written to the file.
+     * @param filePath    The file path where the Excel file will be created.
+     * @throws IllegalArgumentException If the file path is null or blank or missionData is null.
+     * @since 1.0
+     */
 
     public static void writeTransportationData(List<TransportVehicleMission> missionData, String filePath) {
+        if (missionData == null) {
+            throw new IllegalArgumentException("The missionData list cannot be null.");
+        }
+        if (filePath == null || filePath.isBlank()) {
+            throw new IllegalArgumentException("The file path cannot be null or blank.");
+        }
+
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Transportation Data");
 

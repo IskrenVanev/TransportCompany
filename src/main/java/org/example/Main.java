@@ -37,7 +37,7 @@ public class Main {
 
      var driver =   DriverEmployeeDAO.getDriverById(1);
         var tv = TransportVehicleDAO.getTransportVehicleById(1);
-
+//ClientsDAO.addTransportCompany(tc, ClientsDAO.getClientById(6));
 
 
 

@@ -25,10 +25,10 @@ public class DriverEmployeeDaoTest {
     public void testUpdateDriverEmployee(){
         var session = SessionFactoryUtil.getSessionFactory().openSession();
         var driver = DriverEmployeeDAO.getDriverById(1);
-        driver.setName("IskrenDriverUpdated");
+        driver.setName("IskrenDriverUpdated2");
         DriverEmployeeDAO.updateDriverEmployee(driver);
 
-        assertEquals("IskrenDriverUpdated", session.get(DriverEmployee.class, 1L).getName());
+        assertEquals("IskrenDriverUpdated2", session.get(DriverEmployee.class, 1L).getName());
     }
     @Test
     public void testDeleteDriverEmployeeById(){

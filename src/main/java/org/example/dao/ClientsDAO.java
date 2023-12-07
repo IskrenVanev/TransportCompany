@@ -17,14 +17,30 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ClientsDAO {
-    private final SessionFactory sessionFactory;
-    public ClientsDAO(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
+  //  private final SessionFactory sessionFactory;
+  //  public ClientsDAO(SessionFactory sessionFactory) {
+  //      this.sessionFactory = sessionFactory;
+  //  }
 
 
-
+    /**
+     * Adds a new transport company to the client's list of associated transport companies.
+     * The association is bidirectional, and the change is persisted in the database.
+     *
+     * @param company The transport company to be added.
+     * @param client The client to which the transport company will be associated.
+     * @throws IllegalArgumentException If either the transport company or the client is null.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static void addTransportCompany(TransportCompany company, Client client) {
+        if (company == null) {
+            throw new IllegalArgumentException("Transport company cannot be null.");
+        }
+        if (client == null) {
+            throw new IllegalArgumentException("Client cannot be null.");
+        }
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
@@ -39,7 +55,22 @@ public class ClientsDAO {
         }
     }
     //TODO:Check if correct after change of the relationship between tc and client
+
+    /**
+     * Creates or updates a client in the system, including the associated transport companies.
+     * If the referenced transport companies don't exist in the database, they will be saved first.
+     * This method ensures the consistency of the client and its associated data in the database.
+     *
+     * @param client The client to be created or updated.
+     * @throws IllegalArgumentException If the client is null.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static void createClient(Client client) {
+        if (client == null) {
+            throw new IllegalArgumentException("Client cannot be null.");
+        }
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
@@ -56,8 +87,19 @@ public class ClientsDAO {
         }
     }
 
-
+    /**
+     * Retrieves a client from the database by its ID.
+     *
+     * @param id is the ID of the client to be retrieved.
+     * @throws IllegalArgumentException If the provided ID is 0 or negative.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static Client getClientById(long id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("Client ID cannot be 0 or negative.");
+        }
         Client client;
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
@@ -67,6 +109,16 @@ public class ClientsDAO {
         return client;
     }
 
+
+    /**
+     * Retrieves a list of all clients from the database.
+     * This method provides a snapshot of the current state of clients in the system.
+     *
+     * @return A list of clients in the system.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static List<Client> getClients() {
         List<Client> clients;
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
@@ -78,7 +130,22 @@ public class ClientsDAO {
         return clients;
     }
 //TODO:Check if correct after change of the relationship between tc and client
+
+    /**
+     * Retrieves a list of client data transfer objects (DTOs) associated with a specific transport company.
+     * This method uses the provided company ID to filter and fetch clients with related transport companies.
+     *
+     * @param companyId The ID of the transport company for which client DTOs are retrieved.
+     * @return A list of client data transfer objects (DTOs) associated with the specified transport company.
+     * @throws IllegalArgumentException If the provided companyId is 0 or negative.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static List<ClientDTO> getClientsDTO(long companyId) {
+        if (companyId <= 0) {
+            throw new IllegalArgumentException("Company ID cannot be 0 or negative.");
+        }
         List<ClientDTO> clients;
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
@@ -94,7 +161,20 @@ public class ClientsDAO {
         return clients;
     }
     //TODO:Check if correct after change of the relationship between tc and client
+    /**
+     * Deletes a client from the system, including any associations with transport companies.
+     * This method removes the client and clears its associations with transport companies.
+     *
+     * @param client The client to be deleted from the system.
+     * @throws IllegalArgumentException If the client is null.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static void deleteClient(Client client) {
+        if (client == null) {
+            throw new IllegalArgumentException("Client cannot be null.");
+        }
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
@@ -106,7 +186,21 @@ public class ClientsDAO {
         }
     }
     //TODO:Check if correct after change of the relationship between tc and client
+    /**
+     * Deletes a client from the system by its ID, including any associations with transport companies.
+     * This method removes the client and clears its associations with transport companies.
+     *
+     * @param clientId The ID of the client to be deleted from the system.
+     * @throws NoClientException If no client with the specified ID is found in the system.
+     * @throws IllegalArgumentException If the provided client ID is 0 or negative.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static void deleteClientById(long clientId) throws NoClientException {
+        if(clientId <= 0) {
+            throw new IllegalArgumentException("Client ID cannot be 0 or negative.");
+        }
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
@@ -134,8 +228,20 @@ public class ClientsDAO {
             transaction.commit();
         }
     }
-
+    /**
+     * Updates a client's information in the system.
+     * If the client does not exist in the database, it will be saved.
+     *
+     * @param client The client to be updated or saved in the system.
+     * @throws IllegalArgumentException If the client is null.
+     * @throws org.hibernate.HibernateException If there is an issue with the Hibernate operations.
+     *                           Check the nested exceptions for specific details.
+     * @since 1.0
+     */
     public static void updateClient(Client client) {
+        if (client == null) {
+            throw new IllegalArgumentException("Client cannot be null.");
+        }
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             session.saveOrUpdate(client);

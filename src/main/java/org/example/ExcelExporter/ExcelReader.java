@@ -19,7 +19,19 @@ import java.util.List;
 import static org.example.dao.TransportVehicleDAO.getTransportVehicleById;
 
 public class ExcelReader {
+    /**
+     * Reads transportation data from an Excel file and returns a list of transport vehicle missions.
+     *
+     * @param filePath The path to the Excel file containing the transportation data.
+     * @return A list of transport vehicle missions read from the specified Excel file.
+     * @throws IllegalArgumentException If the file path is null or blank.
+     * @throws IOException If an I/O error occurs while reading the Excel file.
+     * @since 1.0
+     */
     public static List<TransportVehicleMission> readTransportationData(String filePath) {
+        if (filePath == null || filePath.isBlank()) {
+            throw new IllegalArgumentException("The file path cannot be null or blank.");
+        }
         List<TransportVehicleMission> missionData = new ArrayList<>();
 
         try (Workbook workbook = new XSSFWorkbook(new FileInputStream(filePath))) {
@@ -45,8 +57,18 @@ public class ExcelReader {
 
         return missionData;
     }
-
+    /**
+     * Creates a transport vehicle mission object from a given Excel sheet row.
+     *
+     * @param row The Excel sheet row containing transportation data.
+     * @return A transport vehicle mission object created from the specified row.
+     * @throws IllegalArgumentException If the row is null.
+     * @since 1.0
+     */
     private static TransportVehicleMission createTransportVehicleMissionFromRow(Row row) {
+        if (row == null) {
+            throw new IllegalArgumentException("The row cannot be null.");
+        }
         TransportVehicleMission mission = new TransportVehicleMission();
 
         mission.setId((long) row.getCell(0).getNumericCellValue());
