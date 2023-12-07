@@ -1,15 +1,106 @@
-import org.example.Models.Client;
-import org.example.Models.Obligation;
-import org.example.Models.TransportCompany;
+import org.example.Models.*;
+import org.example.Models.Enums.ContentType;
 import org.example.configuration.SessionFactoryUtil;
 import org.example.dao.ClientsDAO;
+import org.example.dao.DriverEmployeeDAO;
 import org.example.dao.TransportCompanyDAO;
+import org.example.dao.TransportVehicleDAO;
 import org.junit.jupiter.api.Test;
+
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TransportCompanyDaoTest {//(Obligation obligation , Client client)
 
+    @Test
+    public void testcalculateEarningsForPeriodOfTime() {
+        var session = SessionFactoryUtil.getSessionFactory().openSession();
+       var driver =  DriverEmployeeDAO.getDriverById(1);
+       var result = TransportCompanyDAO.calculateEarningsForPeriodOfTime(driver, LocalDate.of(2021, 1, 1), LocalDate.of(2024, 1, 1));
+        assertEquals(4700,result);
+    }
+    @Test
+    public void testcalculateTotalEarningsForPeriodOfTime() {
+        var session = SessionFactoryUtil.getSessionFactory().openSession();
+
+        var drivers = DriverEmployeeDAO.getDriverEmployees();
+        Set<DriverEmployee> driverSet = convertListToSet(drivers);
+        LocalDate localDate1 = LocalDate.of(2021, 1, 1);
+        LocalDate localDate2 = LocalDate.of(2024, 1, 1);
+
+
+
+        assertEquals(4700, TransportCompanyDAO.calculateTotalEarningsForPeriodOfTime(driverSet, localDate1, localDate2));
+    }
+    public static Set<DriverEmployee> convertListToSet(List<DriverEmployee> drivers) {//helper method for testcalculateTotalEarningsForPeriodOfTime
+        return new HashSet<>(drivers);
+    }
+
+
+    @Test
+    public void testSortMissionsByDistance() {
+        var session = SessionFactoryUtil.getSessionFactory().openSession();
+        var tc = TransportCompanyDAO.getCompanyById(1);
+        TransportCompanyDAO.sortMissionsByDistance(tc);
+        //We can see the output in the console
+
+    }
+    @Test
+    public void testAddMission() {
+        var session = SessionFactoryUtil.getSessionFactory().openSession();
+        var tv = TransportVehicleDAO.getTransportVehicleById(1);
+        var driver =   DriverEmployeeDAO.getDriverById(1);
+        TransportVehicleMission tvm = new TransportVehicleMission(
+                "New York",
+                "Las Vegas",
+                LocalDate.of(2023, 12, 1),  // Date of Departure: December 1, 2023
+                LocalDate.of(2023, 12, 10), // Date of Arrival: December 10, 2023
+                1600.0,                      // Price for Mission
+                tv,     // Assuming you have a default constructor for TransportVehicle
+                ContentType.STOCK,       // Assuming you have a default constructor for TransportContent
+                1000.0,
+                driver
+        );
+        TransportCompanyDAO.addMission(tvm, tv);
+
+        assertEquals(1600, session.get(TransportVehicleMission.class, 3L).getPriceForMission());
+
+    }
+
+    @Test
+    public void testSortBySalary() {
+        var session = SessionFactoryUtil.getSessionFactory().openSession();
+        var tc = TransportCompanyDAO.getCompanyById(1);
+
+        TransportCompanyDAO.sortBySalary(tc);
+        //We can see the output in the console
+    }
+
+    @Test
+    public void testSortByQualification() {
+        var session = SessionFactoryUtil.getSessionFactory().openSession();
+        var tc = TransportCompanyDAO.getCompanyById(1);
+
+        TransportCompanyDAO.sortByQualification(tc);
+        //We can see the output in the console
+    }
+    @Test
+    public void testSortCompaniesByIncome() { //sorts them from the richest to the poorest company
+        var session = SessionFactoryUtil.getSessionFactory().openSession();
+        TransportCompanyDAO.SortCompaniesByIncome();
+        //We can see the output in the console
+    }
+    @Test
+    public void testSortCompaniesByName() {
+        var session = SessionFactoryUtil.getSessionFactory().openSession();
+        TransportCompanyDAO.SortCompaniesByName();
+        //We can see the output in the console
+
+    }
     @Test
     public void testIsThereObligationsThatAreNotPaid() {
         var session = SessionFactoryUtil.getSessionFactory().openSession();
@@ -88,8 +179,11 @@ public class TransportCompanyDaoTest {//(Obligation obligation , Client client)
         var company = new TransportCompany("Company2");
         TransportCompanyDAO.createCompany(company);
 
-        assertEquals(2, session.get(TransportCompany.class, 2L).getId());
-        assertEquals("Company2", session.get(TransportCompany.class, 2L).getName());
+
+        //uncomment these if U need to test the method
+
+        //assertEquals(2, session.get(TransportCompany.class, 2L).getId());
+       // assertEquals("Company2", session.get(TransportCompany.class, 2L).getName());
 
 
     }

@@ -173,26 +173,39 @@ public static void isThereObligationsThatAreNotPaid(Client client, TransportComp
     }
 
 //Test these
-    public static void sortByQualification(TransportCompany tc, DriverEmployee employee){
+    public static void sortByQualification(TransportCompany tc){
         try(Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
-            if (employee == null) {
-                throw new IllegalArgumentException("DriverEmployee cannot be null.");
+            //var drivers = tc.getDriverEmployees();
+
+            Set<DriverEmployee> driverSet = tc.getDriverEmployees();
+            List<DriverEmployee> drivers = new ArrayList<>(driverSet);
+
+            if (drivers == null) {
+                throw new IllegalArgumentException("No drivers in the company.");
             }
-
-
-            // Get the qualifications and print them to the console
-            Set<Qualification> qualifications = employee.getQualifications();
-            if (qualifications != null) {
-                for (Qualification qualification : qualifications) {
-                    System.out.println("Qualification Name: " + qualification.getName());
+            Collections.sort(drivers, Comparator.comparingInt(driver -> {
+                if (driver.getQualifications() != null) {
+                    return driver.getQualifications().size();
+                } else {
+                    return 0; // Drivers with no qualifications are considered to have 0 qualifications
                 }
-            } else {
-                System.out.println("DriverEmployee has no qualifications.");
-            }
+            }));
+                System.out.println("Sorted Drivers by Qualification:");
+                for (DriverEmployee driver : drivers) {
+                    if (driver.getQualifications() != null) {
+                        System.out.print(driver.getName() + " - Qualifications: ");
 
+                        // Iterate over the qualifications and print each one
+                        for (Qualification qualification : driver.getQualifications()) {
+                            System.out.print(qualification.getName() + ", ");
+                        }
 
+                        System.out.println(); // Move to the next line for the next driver
+                    }
+                    else  System.out.println("DriverEmployee "+ driver.getName() + " has no qualifications.");
+                }
 
             transaction.commit();
         }

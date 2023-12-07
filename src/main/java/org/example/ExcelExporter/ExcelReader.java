@@ -66,10 +66,25 @@ public class ExcelReader {
         mission.setContent(ContentType.valueOf(row.getCell(8).getStringCellValue()));
 
         // Handling the case where weight might be null in the Excel sheet
-        if (row.getCell(9) != null && row.getCell(9).getCellType() == CellType.NUMERIC) {
-            mission.setWeight(row.getCell(9).getNumericCellValue());
+        if (row.getCell(9) != null) {
+            Cell weightCell = row.getCell(9);
+            if (weightCell.getCellType() == CellType.NUMERIC) {
+                mission.setWeight(weightCell.getNumericCellValue());
+            } else if (weightCell.getCellType() == CellType.STRING) {
+                try {
+                    // Attempt to parse the string value as a numeric value
+                    double weightValue = Double.parseDouble(weightCell.getStringCellValue());
+                    mission.setWeight(weightValue);
+                } catch (NumberFormatException e) {
+                    // Handle the case when the string cannot be parsed as a numeric value
+                    // You may choose to set a default value or throw an exception based on your requirement
+                    mission.setWeight(null); // or any default value you prefer
+                }
+            } else {
+                // Handle the case when the cell is of an unexpected type
+                mission.setWeight(null); // or any default value you prefer
+            }
         } else {
-            // Handle the case when the cell is null or not numeric
             mission.setWeight(null); // or any default value you prefer
         }
         if (row.getCell(10) != null && row.getCell(10).getCellType() == CellType.NUMERIC){
